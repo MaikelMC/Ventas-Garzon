@@ -157,11 +157,6 @@ export const LoginPage: React.FC = () => {
                 )}
               </motion.button>
 
-              {/* Dev Credentials */}
-              <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-2xl">
-                <p className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2 uppercase tracking-wider">Credenciales de desarrollo</p>
-                </div>
-              </div>
             </form>
 
             {/* Divider */}
