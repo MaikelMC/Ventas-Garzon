@@ -160,13 +160,6 @@ export const LoginPage: React.FC = () => {
               {/* Dev Credentials */}
               <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-2xl">
                 <p className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2 uppercase tracking-wider">Credenciales de desarrollo</p>
-                <div className="space-y-1 text-sm">
-                  <p className="text-amber-800 dark:text-amber-300">
-                    <span className="font-semibold">Admin:</span> admin@ventasgarzon.com
-                  </p>
-                  <p className="text-amber-800 dark:text-amber-300">
-                    <span className="font-semibold">Contraseña:</span> Admin@1234
-                  </p>
                 </div>
               </div>
             </form>

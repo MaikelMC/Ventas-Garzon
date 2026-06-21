@@ -101,7 +101,7 @@ export async function setupDatabase() {
 
     await query(
       `INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, 'admin')
-       ON CONFLICT (email) DO UPDATE SET name = $1, password = $3, role = 'admin';`,
+       ON CONFLICT (email) DO UPDATE SET name = $1, role = 'admin';`,
       [adminName, adminEmail, hashedAdminPassword]
     );
 

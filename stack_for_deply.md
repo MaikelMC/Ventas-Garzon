@@ -143,7 +143,7 @@ NODE_ENV=development
 
 ## Credenciales por Defecto
 
-- **Admin:** `admin@ventasgarzon.com` / `Admin@1234`
+- **Admin:** `admin@ventasgarzon.com` / `Marlene@0101`
 - **DB:** `postgres` / `postgres` (puerto 5433)
 
 ---

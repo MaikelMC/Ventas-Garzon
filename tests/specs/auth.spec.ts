@@ -30,7 +30,7 @@ test.describe('Autenticación', () => {
 
   test('login redirige al home tras autenticación exitosa', async ({ page, context }) => {
     await page.goto('/login');
-    await loginPage.login('admin@ventasgarzon.com', 'Admin@1234');
+    await loginPage.login('admin@ventasgarzon.com', 'Marlene@0101');
 
     await page.waitForURL('**/');
     await expect(page).toHaveURL('/');
