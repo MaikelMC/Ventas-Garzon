@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [
-    ['html', { outputFolder: 'test-results/report' }],
+    ['html', { outputFolder: 'playwright-report' }],
     ['list'],
   ],
   use: {
@@ -25,9 +25,9 @@ export default defineConfig({
     {
       command: 'npm run dev',
       port: 3000,
-      cwd: './client',
+      cwd: '.',
       reuseExistingServer: !process.env.CI,
-      timeout: 30000,
+      timeout: 60000,
     },
   ],
 });

@@ -15,3 +15,5 @@ dist/
 out/
 build/
 server/uploads/*
+test-results/
+playwright-report/

@@ -23,6 +23,7 @@ export class ProductsPage {
 
   async goto() {
     await this.page.goto('/products');
+    await this.allProductCards.first().waitFor({ state: 'attached', timeout: 10000 }).catch(() => {});
   }
 
   categoryButton(categoryName: string): Locator {
