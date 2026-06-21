@@ -16,7 +16,7 @@ import {
   Moon,
 } from 'lucide-react';
 import { useCartStore, useAuthStore } from '../store';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export const Header: React.FC = () => {
   const { items } = useCartStore();
@@ -31,6 +31,7 @@ export const Header: React.FC = () => {
     return false;
   });
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -56,6 +57,18 @@ export const Header: React.FC = () => {
     setIsMenuOpen(false);
     setIsUserMenuOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isUserMenuOpen]);
 
   const navLinks = [
     { to: '/products', label: 'Productos', icon: Package },
@@ -173,7 +186,7 @@ export const Header: React.FC = () => {
 
             {/* User Menu / Auth Buttons */}
             {isLoggedIn ? (
-              <div className="relative">
+              <div className="relative" ref={userMenuRef}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -215,21 +228,25 @@ export const Header: React.FC = () => {
 
                       {/* Menu Items */}
                       <div className="p-2">
-                        <Link
-                          to="/profile"
-                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50 rounded-xl transition-colors"
-                        >
-                          <User size={18} className="text-surface-400" />
-                          <span>Mi Perfil</span>
-                        </Link>
-                        <Link
-                          to="/orders"
-                          className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50 rounded-xl transition-colors"
-                        >
-                          <ShoppingBag size={18} className="text-surface-400" />
-                          <span>Mis Pedidos</span>
-                        </Link>
-                        <hr className="my-2 border-surface-200 dark:border-surface-700" />
+                        {user?.role !== 'admin' && (
+                          <>
+                            <Link
+                              to="/profile"
+                              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50 rounded-xl transition-colors"
+                            >
+                              <User size={18} className="text-surface-400" />
+                              <span>Mi Perfil</span>
+                            </Link>
+                            <Link
+                              to="/orders"
+                              className="flex items-center gap-3 px-3 py-2.5 text-sm text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700/50 rounded-xl transition-colors"
+                            >
+                              <ShoppingBag size={18} className="text-surface-400" />
+                              <span>Mis Pedidos</span>
+                            </Link>
+                            <hr className="my-2 border-surface-200 dark:border-surface-700" />
+                          </>
+                        )}
                         <button
                           onClick={() => {
                             logout();

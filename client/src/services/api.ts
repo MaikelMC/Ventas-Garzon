@@ -129,11 +129,14 @@ export const productService = {
 
 // Order Services
 export const orderService = {
-  createOrder: async (items: any[], shippingAddress: string) => {
-    const response = await apiClient.getClient().post('/orders', {
-      items,
-      shippingAddress,
-    });
+  createOrder: async (data: {
+    items: any[];
+    customerName: string;
+    customerIdCard: string;
+    customerPhone: string;
+    paymentMethod: string;
+  }) => {
+    const response = await apiClient.getClient().post('/orders', data);
     return response.data;
   },
 
@@ -196,6 +199,23 @@ export const adminService = {
     return response.data;
   },
 
+  verifyReservation: async (ticket: string) => {
+    const response = await apiClient.getClient().get(`/admin/reservations/verify`, {
+      params: { ticket },
+    });
+    return response.data;
+  },
+
+  confirmReservation: async (id: string) => {
+    const response = await apiClient.getClient().patch(`/admin/reservations/${id}/confirm`);
+    return response.data;
+  },
+
+  cancelReservation: async (id: string) => {
+    const response = await apiClient.getClient().patch(`/admin/reservations/${id}/cancel`);
+    return response.data;
+  },
+
   getUsers: async (page = 1) => {
     const response = await apiClient.getClient().get('/admin/users', {
       params: { page },
@@ -218,6 +238,18 @@ export const adminService = {
     if (startDate) params.startDate = startDate;
     if (endDate) params.endDate = endDate;
     const response = await apiClient.getClient().get('/admin/analytics/sales', { params });
+    return response.data;
+  },
+};
+
+// Upload Service
+export const uploadService = {
+  uploadImage: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await apiClient.getClient().post('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   },
 };

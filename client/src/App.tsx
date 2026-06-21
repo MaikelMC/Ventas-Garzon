@@ -28,7 +28,7 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen bg-light dark:bg-surface-950 transition-colors duration-300">
         <Header />
-        <main className="flex-1 pt-20">
+        <main className="flex-1">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/products" element={<ProductsPage />} />

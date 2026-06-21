@@ -1,27 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Search, LayoutGrid } from 'lucide-react';
-import { SlideUp, containerVariants, itemVariants } from '../utils/animations';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, RotateCcw, ChevronDown, Tag } from 'lucide-react';
 import { productService } from '../services/api';
 import { Product } from '../types';
 import { ProductCard } from '../components';
+import { useReducedMotion } from '../utils/animations';
+
+const CATEGORIES = [
+  { id: '', name: 'Todos' },
+  { id: 'aseo', name: 'Aseo' },
+  { id: 'alimentos', name: 'Alimentos' },
+  { id: 'bebidas', name: 'Bebidas' },
+  { id: 'limpieza', name: 'Limpieza' },
+];
+
+const PAGE_SIZE = 12;
+
+function useDebounce<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
+}
+
+function useQueryParams() {
+  const [params, setParams] = useState(() => {
+    const sp = new URLSearchParams(window.location.search);
+    return {
+      search: sp.get('search') || '',
+      category: sp.get('category') || '',
+    };
+  });
+
+  const update = useCallback((patch: Partial<typeof params>) => {
+    setParams(prev => {
+      const next = { ...prev, ...patch };
+      const sp = new URLSearchParams();
+      if (next.search) sp.set('search', next.search);
+      if (next.category) sp.set('category', next.category);
+      const qs = sp.toString();
+      const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState(null, '', url);
+      return next;
+    });
+  }, []);
+
+  return [params, update] as const;
+}
 
 export const ProductsPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [queryParams, setQueryParams] = useQueryParams();
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const reduce = useReducedMotion();
+
+  const debouncedSearch = useDebounce(queryParams.search, 300);
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
+        setError(null);
         const data = await productService.getAllProducts(1);
-        setProducts(data.data || data);
-        setFilteredProducts(data.data || data);
-      } catch (error) {
-        console.error('Error loading products:', error);
+        const items: Product[] = data.data || data;
+        setAllProducts(items);
+      } catch (err: any) {
+        setError(err?.message || 'Error al cargar productos. Intenta de nuevo.');
       } finally {
         setLoading(false);
       }
@@ -29,140 +77,172 @@ export const ProductsPage: React.FC = () => {
     loadProducts();
   }, []);
 
-  useEffect(() => {
-    let filtered = products;
-
-    if (selectedCategory) {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
+  const filteredProducts = useMemo(() => {
+    let filtered = allProducts;
+    if (queryParams.category) {
+      filtered = filtered.filter(p => p.category === queryParams.category);
     }
-
-    if (searchQuery) {
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase();
       filtered = filtered.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.description.toLowerCase().includes(searchQuery.toLowerCase())
+        p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
       );
     }
+    return filtered;
+  }, [allProducts, queryParams.category, debouncedSearch]);
 
-    setFilteredProducts(filtered);
-  }, [selectedCategory, searchQuery, products]);
+  const visibleProducts = useMemo(
+    () => filteredProducts.slice(0, visibleCount),
+    [filteredProducts, visibleCount]
+  );
 
-  const categories = [
-    { id: 'aseo', name: 'Aseo' },
-    { id: 'alimentos', name: 'Alimentos' },
-  ];
+  const hasMore = visibleCount < filteredProducts.length;
+
+  const handleRetry = () => {
+    setError(null);
+    setLoading(true);
+    productService.getAllProducts(1)
+      .then(data => {
+        setAllProducts(data.data || data);
+      })
+      .catch((err: any) => {
+        setError(err?.message || 'Error al cargar productos.');
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const itemVariants = {
+    hidden: reduce ? {} : { opacity: 0, y: 16 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+  };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-300/10 dark:bg-primary-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-secondary-300/10 dark:bg-secondary-500/5 rounded-full blur-3xl" />
-      </div>
-
-      {/* Header */}
-      <section className="bg-light dark:bg-surface-950 pt-20 pb-4 border-b border-surface-100 dark:border-surface-800">
+    <div className="min-h-screen bg-white dark:bg-surface-950">
+      {/* Minimal Header */}
+      <div className="pt-20 pb-2 md:pb-3 border-b border-surface-200 dark:border-surface-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-3 shadow-lg">
-              <LayoutGrid size={28} className="text-white" />
+          <div className="flex items-center gap-3">
+            <div className="bg-primary-500 rounded-xl p-2.5">
+              <Tag size={18} className="text-white" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-primary-500 dark:text-primary-400 font-display font-bold">Catálogo</p>
-              <h1 className="text-4xl font-display font-bold text-dark dark:text-white">Productos</h1>
+              <h1 className="font-display font-medium text-2xl md:text-3xl text-ink dark:text-surface-100 tracking-tight">
+                Productos
+              </h1>
+              <p className="text-xs text-ink-muted">Catálogo completo</p>
             </div>
           </div>
-          <p className="text-surface-500 dark:text-surface-400 text-lg ml-[60px]">Explora nuestros mejores productos de aseo y alimentos</p>
         </div>
-      </section>
+      </div>
+
+      {/* Sticky Strip: Search + Categories */}
+      <div className="sticky top-0 z-40 bg-surface-dim dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3 overflow-x-auto scrollbar-none">
+          <div className="relative flex-1 max-w-[160px] md:max-w-[200px] min-w-[100px] md:min-w-[120px]">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
+            <input
+              type="text"
+              placeholder="Buscar…"
+              aria-label="Buscar productos"
+              value={queryParams.search}
+              onChange={(e) => setQueryParams({ search: e.target.value })}
+              className="w-full pl-8 pr-3 py-2 bg-white dark:bg-surface-800 border border-transparent rounded-lg text-xs text-ink dark:text-surface-100 placeholder-ink-muted outline-none focus:border-primary/30 transition-colors"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-shrink-0">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setQueryParams({ category: cat.id })}
+                aria-pressed={queryParams.category === cat.id}
+                className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                  queryParams.category === cat.id
+                    ? 'bg-primary-500 text-white'
+                    : 'text-ink-muted hover:bg-primary/10 hover:text-primary-500'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <aside className="lg:col-span-1">
-            <SlideUp>
-              <div className="bg-white dark:bg-surface-800 p-6 rounded-3xl sticky top-24 shadow-lg dark:shadow-black/20 border border-surface-100 dark:border-surface-700">
-                {/* Search */}
-                <div className="mb-6">
-                  <label className="block text-sm font-bold text-dark dark:text-surface-200 mb-2">Buscar</label>
-                  <div className="relative">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-400 dark:text-surface-500" />
-                    <input
-                      type="text"
-                      placeholder="Busca un producto..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-surface-50 dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-2xl outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-dark dark:text-white placeholder-surface-400 dark:placeholder-surface-500 transition-all duration-300"
-                    />
-                  </div>
-                </div>
-
-                {/* Categories */}
-                <div>
-                  <h3 className="font-bold text-dark dark:text-surface-200 mb-4">Categorías</h3>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setSelectedCategory('')}
-                      className={`w-full text-left px-4 py-3 rounded-2xl font-medium transition-all duration-200 ${
-                        selectedCategory === ''
-                          ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                          : 'bg-surface-50 dark:bg-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-600'
-                      }`}
-                    >
-                      Todos los Productos
-                    </button>
-                    {categories.map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`w-full text-left px-4 py-3 rounded-2xl font-medium transition-all duration-200 ${
-                          selectedCategory === cat.id
-                            ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                            : 'bg-surface-50 dark:bg-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-600'
-                        }`}
-                      >
-                        {cat.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {loading ? (
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="skeleton rounded-2xl mb-4" style={{ aspectRatio: '4/5' }} />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-24">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-error/10 mb-4">
+                <RotateCcw size={24} className="text-error" />
               </div>
-            </SlideUp>
-          </aside>
-
-          {/* Products Grid */}
-          <div className="lg:col-span-3">
-            {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="skeleton h-80 rounded-3xl" />
-                ))}
-              </div>
-            ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="relative inline-block mb-6">
-                  <div className="absolute inset-0 bg-primary-500/20 dark:bg-primary-400/10 rounded-full blur-2xl" />
-                  <div className="relative bg-gradient-to-br from-surface-100 to-surface-50 dark:from-surface-800 dark:to-surface-700 rounded-full p-8 shadow-xl">
-                    <Search size={48} className="text-surface-300 dark:text-surface-500" strokeWidth={1} />
-                  </div>
-                </div>
-                <p className="text-surface-500 dark:text-surface-400 text-lg">No se encontraron productos</p>
-              </div>
-            ) : (
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+              <p className="text-ink-muted text-sm mb-4">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="inline-flex items-center gap-2 px-5 py-2 bg-primary-500 text-white rounded-full text-xs font-medium hover:bg-primary-600 active:scale-[0.97] transition-all"
               >
-                {filteredProducts.map((product) => (
-                  <motion.div key={product.id} variants={itemVariants}>
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </div>
+                <RotateCcw size={14} />
+                Intentar de nuevo
+              </button>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-24">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-100 dark:bg-surface-800 mb-4">
+                <Search size={24} className="text-ink-muted" />
+              </div>
+              <p className="text-ink font-medium text-sm mb-1">Sin resultados</p>
+              <p className="text-ink-muted text-xs mb-5">
+                {debouncedSearch ? `No encontramos "${debouncedSearch}"` : 'Intentá con otra categoría'}
+              </p>
+              <button
+                onClick={() => setQueryParams({ search: '', category: '' })}
+                className="px-5 py-2 border border-surface-200 dark:border-surface-700 text-ink dark:text-surface-100 rounded-full text-xs font-medium hover:bg-surface-100 dark:hover:bg-surface-800 active:scale-[0.97] transition-all"
+              >
+                Limpiar filtros
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 [column-fill:_balance]">
+                <AnimatePresence mode="popLayout">
+                  {visibleProducts.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      layout
+                      className="break-inside-avoid mb-4"
+                    >
+                      <ProductCard product={product} variant="prime" />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {hasMore && (
+                <div className="text-center mt-8">
+                  <button
+                    onClick={() => setVisibleCount(prev => prev + PAGE_SIZE)}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-ink dark:text-surface-100 rounded-full text-xs font-medium hover:border-primary/30 hover:text-primary-500 active:scale-[0.97] transition-all"
+                  >
+                    <ChevronDown size={16} />
+                    Ver más ({filteredProducts.length - visibleCount} restantes)
+                  </button>
+                </div>
+              )}
+
+              <div className="text-center mt-3 text-xs text-ink-muted">
+                {Math.min(visibleCount, filteredProducts.length)} de {filteredProducts.length} productos
+              </div>
+            </>
+          )}
         </div>
       </section>
     </div>

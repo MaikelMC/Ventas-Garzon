@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import 'express-async-errors';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import { config } from './config/index.js';
 import { errorHandler } from './middleware/auth.js';
@@ -10,6 +15,7 @@ import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
 import adminRoutes from './routes/admin.js';
+import uploadRoutes from './routes/upload.js';
 
 const app = express();
 
@@ -18,11 +24,15 @@ app.use(cors(config.cors));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Static files — uploaded images
+app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

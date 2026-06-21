@@ -14,3 +14,4 @@ dist/
 .next/
 out/
 build/
+server/uploads/*

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Truck, Headphones, ArrowRight, HelpCircle } from 'lucide-react';
+import { Store, Headphones, ArrowRight, HelpCircle, ShoppingBag } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -38,10 +38,10 @@ export const AboutPage: React.FC = () => {
                 color: 'from-blue-500 to-blue-600',
               },
               {
-                title: 'Envío confiable',
-                description: 'Entregas rápidas en Bogotá y regiones cercanas.',
-                icon: Truck,
-                color: 'from-purple-500 to-purple-600',
+                title: 'Recoge en Tienda',
+                description: 'Reserva online y recoge cuando te convenga. Sin esperas.',
+                icon: ShoppingBag,
+                color: 'from-teal-500 to-teal-600',
               },
               {
                 title: 'Atención local',

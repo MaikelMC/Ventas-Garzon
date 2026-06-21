@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Heart } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -17,8 +17,8 @@ export const Footer: React.FC = () => {
         }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
           {/* About */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
@@ -65,7 +65,7 @@ export const Footer: React.FC = () => {
               <li>
                 <a href="#" className="hover:text-white hover:pl-1 transition-all duration-300 flex items-center gap-2">
                   <span className="w-1 h-1 bg-primary-500 rounded-full" />
-                  Envíos
+                  Recogida
                 </a>
               </li>
               <li>
@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
                 <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary-500/20 transition-colors">
                   <Mail size={16} className="text-primary-400" />
                 </div>
-                <span className="group-hover:text-white transition-colors">info@ventasgarzon.com</span>
+                <span className="group-hover:text-white transition-colors">thecanaryai14@gmail.com</span>
               </li>
               <li className="flex items-start gap-3 text-gray-400 text-sm group">
                 <div className="p-2 rounded-lg bg-white/5 group-hover:bg-primary-500/20 transition-colors">
@@ -110,12 +110,14 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-500 text-sm flex items-center gap-1">
-              © {currentYear} Ventas Garzón. Hecho con
-              <Heart size={14} className="text-red-500 fill-red-500" />
-              en Cuba
+        <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-white/10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
+            <p className="text-gray-500 text-sm">
+              © {currentYear} Ventas Garzón. Creado por{' '}
+              <span className="text-primary-400 font-semibold">CanaryAI</span> —{' '}
+              <a href="mailto:thecanaryai14@gmail.com" className="hover:text-primary-300 transition-colors">
+                thecanaryai14@gmail.com
+              </a>
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-gray-500 hover:text-primary-400 transition-colors text-sm flex items-center gap-1">

@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion as fmUseReducedMotion } from 'framer-motion';
+
+export const useReducedMotion = fmUseReducedMotion;
 
 export const fadeInVariants = {
   hidden: { opacity: 0 },

@@ -8,7 +8,7 @@ const createProductSchema = z.object({
   description: z.string(),
   price: z.number().positive(),
   image: z.string().url().optional(),
-  category: z.enum(['aseo', 'alimentos']),
+  category: z.enum(['aseo', 'alimentos', 'bebidas', 'limpieza']),
   stock: z.number().int().nonnegative(),
 });
 

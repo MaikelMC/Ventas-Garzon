@@ -4,7 +4,7 @@ export interface Product {
   description: string;
   price: number;
   image: string;
-  category: 'aseo' | 'alimentos';
+  category: string;
   stock: number;
   rating?: number;
   reviews?: number;
@@ -26,12 +26,16 @@ export interface User {
 export interface Order {
   id: number;
   user_id: number;
+  ticket_code: string;
+  customer_name: string;
+  customer_id_card: string;
+  customer_phone: string;
+  payment_method: 'cash' | 'transfer';
   items: CartItem[];
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'picked_up' | 'cancelled';
   created_at: string;
   updated_at: string;
-  shipping_address?: string;
 }
 
 export interface AuthResponse {

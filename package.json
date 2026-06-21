@@ -8,12 +8,19 @@
     "server": "npm --prefix server run dev",
     "client": "npm --prefix client start",
     "build": "npm --prefix client build",
-    "server:build": "npm --prefix server build"
+    "server:build": "npm --prefix server build",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:setup": "npm --prefix server run db:setup"
   },
-  "keywords": ["ecommerce", "ventas-garzon"],
+  "keywords": [
+    "ecommerce",
+    "ventas-garzon"
+  ],
   "author": "Ventas Garzón",
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
     "concurrently": "^7.6.0"
   }
 }

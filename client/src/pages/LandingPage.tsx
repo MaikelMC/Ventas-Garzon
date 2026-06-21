@@ -5,7 +5,7 @@ import { SlideUp, fadeInVariants, containerVariants, itemVariants } from '../uti
 import { productService } from '../services/api';
 import { Product } from '../types';
 import { ProductCard } from '../components';
-import { Truck, Shield, BadgeCheck, ArrowRight } from 'lucide-react';
+import { Store, Shield, BadgeCheck, ArrowRight } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -35,11 +35,11 @@ export const LandingPage: React.FC = () => {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary-300/20 dark:bg-primary-400/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
           <SlideUp>
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <motion.p
-                className="inline-flex items-center gap-2 rounded-full bg-primary-100 dark:bg-primary-900/40 px-4 py-2 text-sm font-semibold text-primary-700 dark:text-primary-300 shadow-sm border border-primary-200 dark:border-primary-800"
+                className="inline-flex items-center gap-2 rounded-full bg-primary-100 dark:bg-primary-900/40 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold text-primary-700 dark:text-primary-300 shadow-sm border border-primary-200 dark:border-primary-800"
                 variants={fadeInVariants}
                 initial="hidden"
                 animate="visible"
@@ -48,7 +48,7 @@ export const LandingPage: React.FC = () => {
                 Tu mercado local de confianza
               </motion.p>
               <motion.h1
-                className="text-5xl md:text-6xl font-display font-bold text-dark dark:text-white leading-tight"
+                className="text-3xl sm:text-5xl md:text-6xl font-display font-bold text-dark dark:text-white leading-tight"
                 variants={fadeInVariants}
                 initial="hidden"
                 animate="visible"
@@ -56,7 +56,7 @@ export const LandingPage: React.FC = () => {
                 Bienvenido a <span className="text-primary-500 dark:text-primary-400">Ventas Garzón</span>
               </motion.h1>
               <motion.p
-                className="text-xl text-surface-600 dark:text-surface-300"
+                className="text-base md:text-xl text-surface-600 dark:text-surface-300"
                 variants={fadeInVariants}
                 initial="hidden"
                 animate="visible"
@@ -74,14 +74,14 @@ export const LandingPage: React.FC = () => {
               >
                 <Link
                   to="/products"
-                  className="group bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full hover:shadow-glow transition-all duration-300 font-bold text-lg flex items-center justify-center gap-2"
+                  className="group bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:shadow-glow transition-all duration-300 font-bold text-base md:text-lg flex items-center justify-center gap-2"
                 >
                   Compra Ahora
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/about"
-                  className="border-2 border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400 px-8 py-4 rounded-full hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 font-bold text-lg"
+                  className="border-2 border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400 px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 font-bold text-base md:text-lg"
                 >
                   Conoce Más
                 </Link>
@@ -96,30 +96,23 @@ export const LandingPage: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="w-full aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary-200 dark:border-primary-800 bg-white dark:bg-surface-800 shadow-2xl dark:shadow-primary-500/10">
+            <div className="w-full max-w-xs mx-auto md:max-w-none aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 border-primary-200 dark:border-primary-800 bg-white dark:bg-surface-800 shadow-2xl dark:shadow-primary-500/10">
               <img
                 src="/logo2.jpg"
                 alt="Logo Ventas Garzón"
                 className="w-full h-full object-cover"
               />
             </div>
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -bottom-4 -right-4 bg-gradient-to-r from-secondary-500 to-secondary-600 text-white px-6 py-3 rounded-full font-bold shadow-lg"
-            >
-              Envío Gratis
-            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-surface-50 dark:bg-surface-900 transition-colors">
+      <section className="py-12 md:py-20 bg-surface-50 dark:bg-surface-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SlideUp>
-            <h2 className="text-4xl font-display font-bold text-center text-dark dark:text-white mb-4">¿Por qué elegirnos?</h2>
-            <p className="text-center text-surface-500 dark:text-surface-400 mb-12 max-w-2xl mx-auto">
+            <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-dark dark:text-white mb-2 md:mb-4">¿Por qué elegirnos?</h2>
+            <p className="text-center text-surface-500 dark:text-surface-400 mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-base">
               Ofrecemos la mejor experiencia de compra con productos de calidad y servicio excepcional
             </p>
           </SlideUp>
@@ -129,13 +122,13 @@ export const LandingPage: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8"
           >
             {[
               {
-                icon: Truck,
-                title: 'Envío Rápido',
-                description: 'Entrega a domicilio en 24-48 horas',
+                icon: Store,
+                title: 'Recoge en Tienda',
+                description: 'Reserva online y recoge cuando quieras',
                 color: 'from-primary-500 to-primary-600',
               },
               {
@@ -155,13 +148,13 @@ export const LandingPage: React.FC = () => {
                 key={index}
                 variants={itemVariants}
                 whileHover={{ y: -8 }}
-                className="bg-white dark:bg-surface-800 p-8 rounded-2xl shadow-lg dark:shadow-black/20 hover:shadow-xl transition-all duration-300 border border-surface-100 dark:border-surface-700"
+                className="bg-white dark:bg-surface-800 p-5 md:p-8 rounded-2xl shadow-lg dark:shadow-black/20 hover:shadow-xl transition-all duration-300 border border-surface-100 dark:border-surface-700"
               >
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg`}>
-                  <feature.icon size={28} className="text-white" />
+                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 md:mb-6 shadow-lg`}>
+                  <feature.icon size={20} className="text-white" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-dark dark:text-white mb-2">{feature.title}</h3>
-                <p className="text-surface-500 dark:text-surface-400">{feature.description}</p>
+                <h3 className="text-base md:text-xl font-display font-bold text-dark dark:text-white mb-1 md:mb-2">{feature.title}</h3>
+                <p className="text-surface-500 dark:text-surface-400 text-sm">{feature.description}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -169,10 +162,10 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Promotions Section */}
-      <section className="py-20 bg-white dark:bg-surface-950 transition-colors">
+      <section className="py-12 md:py-20 bg-white dark:bg-surface-950 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SlideUp>
-            <h2 className="text-4xl font-display font-bold text-center text-dark dark:text-white mb-12">Ofertas Especiales</h2>
+            <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-dark dark:text-white mb-8 md:mb-12">Ofertas Especiales</h2>
           </SlideUp>
 
           <motion.div
@@ -180,18 +173,18 @@ export const LandingPage: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8"
           >
             <motion.div
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-primary-500 to-primary-700 text-white p-8 rounded-2xl overflow-hidden relative shadow-xl"
+              className="bg-gradient-to-br from-primary-500 to-primary-700 text-white p-5 md:p-8 rounded-2xl overflow-hidden relative shadow-xl"
             >
               <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16" />
-              <h3 className="text-3xl font-display font-bold mb-2 relative z-10">Descuento en Aseo</h3>
-              <p className="mb-6 text-primary-100 relative z-10">Hasta 40% en productos de limpieza</p>
-              <Link to="/products?category=aseo" className="inline-flex items-center gap-2 bg-white text-primary-600 px-6 py-3 rounded-full font-bold hover:shadow-lg transition-all duration-300 relative z-10">
+              <h3 className="text-xl md:text-3xl font-display font-bold mb-1 md:mb-2 relative z-10">Descuento en Aseo</h3>
+              <p className="mb-4 md:mb-6 text-primary-100 relative z-10 text-sm md:text-base">Hasta 40% en productos de limpieza</p>
+              <Link to="/products?category=aseo" className="inline-flex items-center gap-2 bg-white text-primary-600 px-5 md:px-6 py-2.5 md:py-3 rounded-full font-bold text-sm md:text-base hover:shadow-lg transition-all duration-300 relative z-10">
                 Ver Oferta
                 <ArrowRight size={18} />
               </Link>
@@ -200,13 +193,13 @@ export const LandingPage: React.FC = () => {
             <motion.div
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="bg-gradient-to-br from-secondary-500 to-secondary-700 text-white p-8 rounded-2xl overflow-hidden relative shadow-xl"
+              className="bg-gradient-to-br from-secondary-500 to-secondary-700 text-white p-5 md:p-8 rounded-2xl overflow-hidden relative shadow-xl"
             >
               <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16" />
-              <h3 className="text-3xl font-display font-bold mb-2 relative z-10">Pack Alimentos</h3>
-              <p className="mb-6 text-secondary-100 relative z-10">Combos especiales con envío gratis</p>
-              <Link to="/products?category=alimentos" className="inline-flex items-center gap-2 bg-white text-secondary-600 px-6 py-3 rounded-full font-bold hover:shadow-lg transition-all duration-300 relative z-10">
+              <h3 className="text-xl md:text-3xl font-display font-bold mb-1 md:mb-2 relative z-10">Pack Alimentos</h3>
+              <p className="mb-4 md:mb-6 text-secondary-100 relative z-10 text-sm md:text-base">Combos especiales para reservar</p>
+              <Link to="/products?category=alimentos" className="inline-flex items-center gap-2 bg-white text-secondary-600 px-5 md:px-6 py-2.5 md:py-3 rounded-full font-bold text-sm md:text-base hover:shadow-lg transition-all duration-300 relative z-10">
                 Ver Oferta
                 <ArrowRight size={18} />
               </Link>
@@ -216,19 +209,19 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-20 bg-surface-50 dark:bg-surface-900 transition-colors">
+      <section className="py-12 md:py-20 bg-surface-50 dark:bg-surface-900 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SlideUp>
-            <h2 className="text-4xl font-display font-bold text-center text-dark dark:text-white mb-4">Productos Destacados</h2>
-            <p className="text-center text-surface-500 dark:text-surface-400 mb-12 max-w-2xl mx-auto">
+            <h2 className="text-2xl md:text-4xl font-display font-bold text-center text-dark dark:text-white mb-2 md:mb-4">Productos Destacados</h2>
+            <p className="text-center text-surface-500 dark:text-surface-400 mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-base">
               Descubre nuestra selección de productos más populares
             </p>
           </SlideUp>
 
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="skeleton h-80 rounded-2xl" />
+                <div key={i} className="skeleton h-60 md:h-80 rounded-2xl" />
               ))}
             </div>
           ) : (
@@ -237,7 +230,7 @@ export const LandingPage: React.FC = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8"
             >
               {featuredProducts.map((product) => (
                 <motion.div key={product.id} variants={itemVariants}>
@@ -250,7 +243,7 @@ export const LandingPage: React.FC = () => {
           <div className="text-center mt-12">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full hover:shadow-glow transition-all duration-300 font-bold text-lg group"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full hover:shadow-glow transition-all duration-300 font-bold text-base md:text-lg group"
             >
               Ver Todos los Productos
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -260,18 +253,18 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-700 dark:to-primary-600 text-white relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-primary-600 to-primary-500 dark:from-primary-700 dark:to-primary-600 text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto text-center px-4">
           <SlideUp>
-            <h2 className="text-4xl font-display font-bold mb-4">¿Listo para Comprar?</h2>
-            <p className="text-xl mb-8 text-primary-100">Únete a miles de clientes satisfechos</p>
+            <h2 className="text-2xl md:text-4xl font-display font-bold mb-2 md:mb-4">¿Listo para Comprar?</h2>
+            <p className="text-base md:text-xl mb-6 md:mb-8 text-primary-100">Únete a miles de clientes satisfechos</p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 bg-white text-primary-600 px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all duration-300 text-lg group"
+              className="inline-flex items-center gap-2 bg-white text-primary-600 px-6 md:px-8 py-3 md:py-4 rounded-full font-bold hover:shadow-xl transition-all duration-300 text-base md:text-lg group"
             >
               Compra Ahora
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

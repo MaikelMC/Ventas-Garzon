@@ -11,7 +11,10 @@ const createOrderSchema = z.object({
       price: z.union([z.number(), z.string().transform(Number)]).refine((n) => n > 0),
     })
   ),
-  shippingAddress: z.string().min(1, 'La dirección de envío es requerida'),
+  customerName: z.string().min(3, 'Nombre requerido'),
+  customerIdCard: z.string().min(5, 'Carnet requerido'),
+  customerPhone: z.string().min(7, 'Teléfono requerido'),
+  paymentMethod: z.enum(['cash', 'transfer']).default('cash'),
 });
 
 export async function createOrderHandler(req: Request, res: Response) {
@@ -21,10 +24,17 @@ export async function createOrderHandler(req: Request, res: Response) {
     }
 
     const body = createOrderSchema.parse(req.body);
-
     const total = body.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    const order = await createOrder(req.user.userId, body.items, body.shippingAddress, total);
+    const order = await createOrder(
+      req.user.userId,
+      body.items,
+      body.customerName,
+      body.customerIdCard,
+      body.customerPhone,
+      body.paymentMethod,
+      total
+    );
 
     res.status(201).json(order);
   } catch (error: any) {
@@ -45,9 +55,7 @@ export async function listOrders(req: Request, res: Response) {
     }
 
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-
     const result = await getOrders(req.user.userId, page);
-
     res.json(result);
   } catch (error: any) {
     if (error instanceof ApiError) {
@@ -69,7 +77,6 @@ export async function getOrderHandler(req: Request, res: Response) {
     }
 
     const order = await getOrderById(id, req.user.userId);
-
     res.json(order);
   } catch (error: any) {
     if (error instanceof ApiError) {
@@ -92,7 +99,6 @@ export async function updateOrderStatusHandler(req: Request, res: Response) {
     }
 
     const order = await updateOrderStatus(id, status);
-
     res.json(order);
   } catch (error: any) {
     if (error instanceof ApiError) {

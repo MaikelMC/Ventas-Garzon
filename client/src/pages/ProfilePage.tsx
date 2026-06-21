@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, ShoppingCart, DollarSign, Package, TrendingUp,
-  Star, CalendarDays, X, Clock, CheckCircle2, Truck, XCircle, MapPin
+  Star, CalendarDays, X, Clock, CheckCircle2, XCircle
 } from 'lucide-react';
 import { useAuthStore } from '../store';
 import { authService, orderService } from '../services/api';
@@ -11,9 +11,7 @@ import { formatPrice, formatDate } from '../utils';
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: any }> = {
   pending: { label: 'Pendiente', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30', icon: Clock },
-  confirmed: { label: 'Confirmado', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
-  shipped: { label: 'Enviado', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-900/30', icon: Truck },
-  delivered: { label: 'Entregado', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: CheckCircle2 },
+  confirmed: { label: 'Confirmado', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: CheckCircle2 },
   cancelled: { label: 'Cancelado', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: XCircle },
 };
 
@@ -38,6 +36,16 @@ export const ProfilePage: React.FC = () => {
         .finally(() => setIsLoading(false));
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedOrder) {
+        setSelectedOrder(null);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedOrder]);
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -89,8 +97,8 @@ export const ProfilePage: React.FC = () => {
           {[
             { label: 'Total Pedidos', value: stats?.totalOrders ?? 0, icon: ShoppingCart, color: 'from-blue-500 to-blue-600', sub: `${stats?.pendingOrders ?? 0} activos` },
             { label: 'Total Gastado', value: formatPrice(stats?.totalSpent ?? 0), icon: DollarSign, color: 'from-primary-500 to-primary-600', sub: `Promedio: ${formatPrice(stats?.avgOrderValue ?? 0)}` },
-            { label: 'Artículos Comprados', value: stats?.totalItems ?? 0, icon: Package, color: 'from-purple-500 to-purple-600', sub: `${stats?.deliveredOrders ?? 0} entregados` },
-            { label: 'Categoría Favorita', value: stats?.favoriteCategory ? (stats.favoriteCategory === 'aseo' ? 'Aseo' : 'Alimentos') : 'N/A', icon: Star, color: 'from-secondary-500 to-secondary-600', sub: stats?.favoriteCategory ? 'Más comprada' : 'Sin datos aún' },
+            { label: 'Artículos Comprados', value: stats?.totalItems ?? 0, icon: Package, color: 'from-teal-500 to-teal-600', sub: `${stats?.confirmedOrders ?? 0} confirmados` },
+            { label: 'Categoría Favorita', value: stats?.favoriteCategory ? ({ aseo: 'Aseo', limpieza: 'Limpieza', alimentos: 'Alimentos', bebidas: 'Bebidas' }[stats.favoriteCategory] || stats.favoriteCategory) : 'N/A', icon: Star, color: 'from-secondary-500 to-secondary-600', sub: stats?.favoriteCategory ? 'Más comprada' : 'Sin datos aún' },
           ].map((stat, i) => (
             <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
               whileHover={{ y: -4 }}
@@ -251,16 +259,6 @@ export const ProfilePage: React.FC = () => {
                     );
                   })()}
                 </div>
-
-                {/* Shipping Address */}
-                {selectedOrder.shipping_address && (
-                  <div className="rounded-2xl bg-surface-50 dark:bg-surface-700/50 p-4">
-                    <p className="text-xs uppercase tracking-wider text-surface-500 dark:text-surface-400 font-semibold mb-2 flex items-center gap-1.5">
-                      <MapPin size={14} /> Dirección de envío
-                    </p>
-                    <p className="text-sm text-dark dark:text-white">{selectedOrder.shipping_address}</p>
-                  </div>
-                )}
 
                 {/* Items */}
                 {selectedOrder.items && selectedOrder.items.length > 0 && (

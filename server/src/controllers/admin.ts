@@ -1,29 +1,28 @@
 import { Request, Response } from 'express';
 import { query } from '../database/index.js';
 import { getAllProducts } from '../models/product.js';
+import { getOrderByTicket, confirmOrder, cancelOrder } from '../models/order.js';
 import { ApiError } from '../utils/helpers.js';
 
 export async function getDashboard(req: Request, res: Response) {
   try {
-    // Get total products
     const productsResult = await query('SELECT COUNT(*) as total FROM products');
     const totalProducts = parseInt(productsResult.rows[0].total);
 
-    // Get total orders
     const ordersResult = await query('SELECT COUNT(*) as total FROM orders');
     const totalOrders = parseInt(ordersResult.rows[0].total);
 
-    // Get total users
     const usersResult = await query('SELECT COUNT(*) as total FROM users');
     const totalUsers = parseInt(usersResult.rows[0].total);
 
-    // Get total revenue
-    const revenueResult = await query('SELECT SUM(total) as total FROM orders WHERE status != $1', ['cancelled']);
+    const revenueResult = await query("SELECT SUM(total) as total FROM orders WHERE status IN ('confirmed', 'picked_up')");
     const totalRevenue = parseFloat(revenueResult.rows[0].total || 0);
 
-    // Get recent orders
+    const pendingResult = await query("SELECT COUNT(*) as total FROM orders WHERE status = 'pending'");
+    const pendingReservations = parseInt(pendingResult.rows[0].total);
+
     const recentOrdersResult = await query(`
-      SELECT o.*, u.name, u.email FROM orders o
+      SELECT o.*, u.name as user_name FROM orders o
       JOIN users u ON o.user_id = u.id
       ORDER BY o.created_at DESC
       LIMIT 10
@@ -35,6 +34,7 @@ export async function getDashboard(req: Request, res: Response) {
         totalOrders,
         totalUsers,
         totalRevenue,
+        pendingReservations,
       },
       recentOrders: recentOrdersResult.rows,
     });
@@ -49,10 +49,55 @@ export async function getDashboard(req: Request, res: Response) {
 export async function listAllProducts(req: Request, res: Response) {
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-
     const result = await getAllProducts(page, 20);
-
     res.json(result);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+}
+
+export async function verifyReservation(req: Request, res: Response) {
+  try {
+    const ticket = req.query.ticket as string;
+    if (!ticket || ticket.trim().length < 3) {
+      throw new ApiError(400, 'Código de ticket requerido');
+    }
+
+    const order = await getOrderByTicket(ticket.trim());
+    res.json(order);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+}
+
+export async function confirmReservation(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) throw new ApiError(400, 'ID inválido');
+
+    const order = await confirmOrder(id);
+    res.json(order);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+}
+
+export async function cancelReservation(req: Request, res: Response) {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) throw new ApiError(400, 'ID inválido');
+
+    const order = await cancelOrder(id);
+    res.json(order);
   } catch (error: any) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json({ message: error.message });
@@ -69,7 +114,7 @@ export async function listAllOrders(req: Request, res: Response) {
     const limit = 20;
     const offset = (page - 1) * limit;
 
-    let sql = 'SELECT o.*, u.name, u.email FROM orders o JOIN users u ON o.user_id = u.id';
+    let sql = 'SELECT o.*, u.name as user_name FROM orders o JOIN users u ON o.user_id = u.id';
     const params: any[] = [];
 
     if (status) {
@@ -84,13 +129,25 @@ export async function listAllOrders(req: Request, res: Response) {
 
     const ordersResult = await query(sql, params);
 
+    const orders = await Promise.all(
+      ordersResult.rows.map(async (order: any) => {
+        const itemsResult = await query(
+          `SELECT oi.*, p.name, p.image FROM order_items oi
+           JOIN products p ON oi.product_id = p.id
+           WHERE oi.order_id = $1`,
+          [order.id]
+        );
+        return { ...order, items: itemsResult.rows };
+      })
+    );
+
     const countSql = status ? 'SELECT COUNT(*) FROM orders WHERE status = $1' : 'SELECT COUNT(*) FROM orders';
     const countParams = status ? [status] : [];
     const countResult = await query(countSql, countParams);
     const total = parseInt(countResult.rows[0].count);
 
     res.json({
-      data: ordersResult.rows,
+      data: orders,
       total,
       page,
       pageSize: limit,
@@ -107,7 +164,6 @@ export async function listAllOrders(req: Request, res: Response) {
 export async function listAllUsers(req: Request, res: Response) {
   try {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-
     const limit = 20;
     const offset = (page - 1) * limit;
 
@@ -136,31 +192,30 @@ export async function listAllUsers(req: Request, res: Response) {
 
 export async function getSalesAnalytics(req: Request, res: Response) {
   try {
-    // Get sales by category
     const categorySalesResult = await query(`
       SELECT p.category, COUNT(oi.id) as count, SUM(oi.price * oi.quantity) as total
       FROM order_items oi
       JOIN products p ON oi.product_id = p.id
       JOIN orders o ON oi.order_id = o.id
-      WHERE o.status != 'cancelled'
+      WHERE o.status IN ('confirmed', 'picked_up')
       GROUP BY p.category
     `);
 
-    // Get sales by date (last 30 days)
     const dailySalesResult = await query(`
       SELECT DATE(o.created_at) as date, COUNT(o.id) as orders, SUM(o.total) as total
       FROM orders o
       WHERE o.created_at >= CURRENT_DATE - INTERVAL '30 days'
-      AND o.status != 'cancelled'
+      AND o.status IN ('confirmed', 'picked_up')
       GROUP BY DATE(o.created_at)
       ORDER BY date DESC
     `);
 
-    // Get top products
     const topProductsResult = await query(`
       SELECT p.id, p.name, COUNT(oi.id) as sales, SUM(oi.quantity) as quantity
       FROM order_items oi
       JOIN products p ON oi.product_id = p.id
+      JOIN orders o ON oi.order_id = o.id
+      WHERE o.status IN ('confirmed', 'picked_up')
       GROUP BY p.id, p.name
       ORDER BY sales DESC
       LIMIT 10
@@ -182,7 +237,6 @@ export async function getSalesAnalytics(req: Request, res: Response) {
 export async function createProduct(req: Request, res: Response) {
   try {
     const { name, description, price, stock, category, image } = req.body;
-
     if (!name || !price || !category) {
       throw new ApiError(400, 'Nombre, precio y categoría son requeridos');
     }
@@ -236,7 +290,6 @@ export async function updateProduct(req: Request, res: Response) {
 export async function deleteProduct(req: Request, res: Response) {
   try {
     const { id } = req.params;
-
     const existing = await query('SELECT id FROM products WHERE id = $1', [id]);
     if (existing.rows.length === 0) {
       throw new ApiError(404, 'Producto no encontrado');
@@ -257,43 +310,26 @@ export async function updateOrderStatus(req: Request, res: Response) {
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+    const validStatuses = ['pending', 'confirmed', 'picked_up', 'cancelled'];
     if (!validStatuses.includes(status)) {
       throw new ApiError(400, 'Estado no válido');
     }
 
-    const existing = await query('SELECT id, status FROM orders WHERE id = $1', [id]);
-    if (existing.rows.length === 0) {
-      throw new ApiError(404, 'Pedido no encontrado');
+    if (status === 'confirmed') {
+      const order = await confirmOrder(parseInt(id));
+      return res.json(order);
     }
-
-    // If marking as delivered, decrease stock
-    if (status === 'delivered' && existing.rows[0].status !== 'delivered') {
-      const items = await query('SELECT product_id, quantity FROM order_items WHERE order_id = $1', [id]);
-      for (const item of items.rows) {
-        await query(
-          'UPDATE products SET stock = GREATEST(0, stock - $1) WHERE id = $2',
-          [item.quantity, item.product_id]
-        );
-      }
-    }
-
-    // If cancelling a delivered order, restore stock
-    if (status === 'cancelled' && existing.rows[0].status === 'delivered') {
-      const items = await query('SELECT product_id, quantity FROM order_items WHERE order_id = $1', [id]);
-      for (const item of items.rows) {
-        await query(
-          'UPDATE products SET stock = stock + $1 WHERE id = $2',
-          [item.quantity, item.product_id]
-        );
-      }
+    if (status === 'cancelled') {
+      const order = await cancelOrder(parseInt(id));
+      return res.json(order);
     }
 
     const result = await query(
-      'UPDATE orders SET status = $1 WHERE id = $2 RETURNING *',
+      'UPDATE orders SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *',
       [status, id]
     );
 
+    if (!result.rows[0]) throw new ApiError(404, 'Reserva no encontrada');
     res.json(result.rows[0]);
   } catch (error: any) {
     if (error instanceof ApiError) {
@@ -308,7 +344,7 @@ export async function updateUserRole(req: Request, res: Response) {
     const { id } = req.params;
     const { role } = req.body;
 
-    const validRoles = ['user', 'admin'];
+    const validRoles = ['customer', 'admin'];
     if (!validRoles.includes(role)) {
       throw new ApiError(400, 'Rol no válido');
     }
@@ -335,16 +371,15 @@ export async function updateUserRole(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response) {
   try {
     const { id } = req.params;
-
     const existing = await query('SELECT id, role FROM users WHERE id = $1', [id]);
     if (existing.rows.length === 0) {
       throw new ApiError(404, 'Usuario no encontrado');
     }
-
     if (existing.rows[0].role === 'admin') {
       throw new ApiError(400, 'No se puede eliminar un administrador');
     }
 
+    await query('DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = $1)', [id]);
     await query('DELETE FROM orders WHERE user_id = $1', [id]);
     await query('DELETE FROM users WHERE id = $1', [id]);
 

@@ -26,13 +26,13 @@ export const CartPage: React.FC = () => {
                 <ShoppingCart size={64} className="text-surface-300 dark:text-surface-500" strokeWidth={1} />
               </div>
             </div>
-            <h1 className="text-4xl font-display font-bold text-dark dark:text-white mb-3">Tu carrito está vacío</h1>
-            <p className="text-surface-500 dark:text-surface-400 text-lg mb-10 max-w-md mx-auto">
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-dark dark:text-white mb-2 md:mb-3">Tu carrito está vacío</h1>
+            <p className="text-surface-500 dark:text-surface-400 text-base md:text-lg mb-6 md:mb-10 max-w-md mx-auto">
               Agrega productos para comenzar tu compra
             </p>
             <Link
               to="/products"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-glow hover:from-primary-600 hover:to-primary-700 transition-all duration-300"
+              className="inline-flex items-center gap-2 md:gap-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-bold text-base md:text-lg shadow-lg hover:shadow-glow hover:from-primary-600 hover:to-primary-700 transition-all duration-300"
             >
               <ShoppingCart size={20} />
               Continuar Comprando
@@ -52,18 +52,18 @@ export const CartPage: React.FC = () => {
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SlideUp>
-          <div className="flex items-center gap-4 mb-10">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-3 shadow-lg">
-              <ShoppingCart size={28} className="text-white" />
+          <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-10">
+            <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl md:rounded-2xl p-2 md:p-3 shadow-lg">
+              <ShoppingCart size={22} className="text-white" />
             </div>
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-primary-500 dark:text-primary-400 font-display font-bold">Tu Carrito</p>
-              <h1 className="text-4xl font-display font-bold text-dark dark:text-white">Mi Carrito</h1>
+              <h1 className="text-2xl md:text-4xl font-display font-bold text-dark dark:text-white">Mi Carrito</h1>
             </div>
           </div>
         </SlideUp>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
           {/* Items */}
           <div className="lg:col-span-2">
             <motion.div
@@ -76,9 +76,9 @@ export const CartPage: React.FC = () => {
                 <motion.div
                   key={item.id}
                   variants={itemVariants}
-                  className="bg-white dark:bg-surface-800 rounded-2xl shadow-lg dark:shadow-black/20 p-6 flex gap-6 border border-surface-100 dark:border-surface-700 hover:shadow-xl dark:hover:shadow-black/30 transition-all duration-300"
+                  className="bg-white dark:bg-surface-800 rounded-2xl shadow-lg dark:shadow-black/20 p-4 md:p-6 flex gap-3 md:gap-6 border border-surface-100 dark:border-surface-700 hover:shadow-xl dark:hover:shadow-black/30 transition-all duration-300"
                 >
-                  <div className="w-24 h-24 flex-shrink-0">
+                  <div className="w-16 h-16 md:w-24 md:h-24 flex-shrink-0">
                     <img
                       src={item.image || 'https://via.placeholder.com/200'}
                       alt={item.name}
@@ -87,9 +87,9 @@ export const CartPage: React.FC = () => {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg text-dark dark:text-white truncate">{item.name}</h3>
-                    <p className="text-surface-500 dark:text-surface-400 text-sm mb-2 line-clamp-1">{item.description}</p>
-                    <p className="font-bold text-primary-600 dark:text-primary-400">{formatPrice(item.price)}</p>
+                    <h3 className="font-bold text-sm md:text-lg text-dark dark:text-white truncate">{item.name}</h3>
+                    <p className="text-surface-500 dark:text-surface-400 text-xs md:text-sm mb-1 md:mb-2 line-clamp-1">{item.description}</p>
+                    <p className="font-bold text-sm md:text-base text-primary-600 dark:text-primary-400">{formatPrice(item.price)}</p>
                   </div>
 
                   <div className="flex flex-col items-end justify-between">
@@ -100,23 +100,23 @@ export const CartPage: React.FC = () => {
                       <Trash2 size={20} />
                     </button>
 
-                    <div className="flex items-center border border-surface-200 dark:border-surface-600 rounded-xl bg-surface-50 dark:bg-surface-700/50">
+                    <div className="flex items-center border border-surface-200 dark:border-surface-600 rounded-lg md:rounded-xl bg-surface-50 dark:bg-surface-700/50">
                       <button
                         onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                        className="px-3 py-2 hover:bg-surface-100 dark:hover:bg-surface-600 rounded-l-xl transition-colors"
+                        className="px-2 md:px-3 py-1.5 md:py-2 hover:bg-surface-100 dark:hover:bg-surface-600 rounded-l-lg md:rounded-l-xl transition-colors"
                       >
-                        <Minus size={16} className="text-surface-600 dark:text-surface-300" />
+                        <Minus size={14} className="text-surface-600 dark:text-surface-300" />
                       </button>
-                      <span className="px-4 py-2 font-bold text-dark dark:text-white min-w-[2.5rem] text-center">{item.quantity}</span>
+                      <span className="px-2 md:px-4 py-1.5 md:py-2 font-bold text-dark dark:text-white min-w-[2rem] md:min-w-[2.5rem] text-center text-sm">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-3 py-2 hover:bg-surface-100 dark:hover:bg-surface-600 rounded-r-xl transition-colors"
+                        className="px-2 md:px-3 py-1.5 md:py-2 hover:bg-surface-100 dark:hover:bg-surface-600 rounded-r-lg md:rounded-r-xl transition-colors"
                       >
-                        <Plus size={16} className="text-surface-600 dark:text-surface-300" />
+                        <Plus size={14} className="text-surface-600 dark:text-surface-300" />
                       </button>
                     </div>
 
-                    <p className="font-bold text-dark dark:text-white">
+                    <p className="font-bold text-sm md:text-base text-dark dark:text-white">
                       {formatPrice(item.price * item.quantity)}
                     </p>
                   </div>
@@ -128,42 +128,34 @@ export const CartPage: React.FC = () => {
           {/* Summary */}
           <div className="lg:col-span-1">
             <SlideUp delay={0.2}>
-              <div className="bg-white dark:bg-surface-800 rounded-3xl p-6 sticky top-24 shadow-xl dark:shadow-black/30 border border-surface-100 dark:border-surface-700">
-                <h2 className="text-2xl font-display font-bold text-dark dark:text-white mb-6">Resumen</h2>
+              <div className="bg-white dark:bg-surface-800 rounded-2xl md:rounded-3xl p-4 md:p-6 sticky top-24 shadow-xl dark:shadow-black/30 border border-surface-100 dark:border-surface-700">
+                <h2 className="text-xl md:text-2xl font-display font-bold text-dark dark:text-white mb-4 md:mb-6">Resumen</h2>
 
-                <div className="space-y-4 mb-6 border-b border-surface-100 dark:border-surface-700 pb-6">
+                <div className="mb-6 border-b border-surface-100 dark:border-surface-700 pb-6">
                   <div className="flex justify-between text-dark dark:text-surface-200">
                     <span>Subtotal:</span>
                     <span>{formatPrice(total)}</span>
                   </div>
-                  <div className="flex justify-between text-dark dark:text-surface-200">
-                    <span>Envío:</span>
-                    <span className="text-green-500 font-bold">Gratis</span>
-                  </div>
-                  <div className="flex justify-between text-dark dark:text-surface-200">
-                    <span>Impuesto (19%):</span>
-                    <span>{formatPrice(total * 0.19)}</span>
-                  </div>
                 </div>
 
-                <div className="flex justify-between text-2xl font-bold text-dark dark:text-white mb-6">
+                <div className="flex justify-between text-xl md:text-2xl font-bold text-dark dark:text-white mb-4 md:mb-6">
                   <span>Total:</span>
-                  <span className="text-primary-600 dark:text-primary-400">{formatPrice(total * 1.19)}</span>
+                  <span className="text-primary-600 dark:text-primary-400">{formatPrice(total)}</span>
                 </div>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate('/checkout')}
-                  className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-glow hover:from-primary-600 hover:to-primary-700 transition-all duration-300 mb-4 flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 md:py-4 rounded-full font-bold text-base md:text-lg shadow-lg hover:shadow-glow hover:from-primary-600 hover:to-primary-700 transition-all duration-300 mb-3 md:mb-4 flex items-center justify-center gap-2"
                 >
-                  Proceder al Pago
+                  Reservar Productos
                   <ArrowRight size={20} />
                 </motion.button>
 
                 <button
                   onClick={() => navigate('/products')}
-                  className="w-full border-2 border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400 py-3 rounded-full font-bold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 mb-4"
+                  className="w-full border-2 border-primary-500 dark:border-primary-400 text-primary-600 dark:text-primary-400 py-2.5 md:py-3 rounded-full font-bold text-sm md:text-base hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300 mb-3 md:mb-4"
                 >
                   Seguir Comprando
                 </button>
