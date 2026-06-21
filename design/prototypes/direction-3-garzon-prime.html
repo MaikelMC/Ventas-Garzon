@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garzon Prime — Productos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --bg-soft: #fafafa;
+  --text: #0f172a;
+  --text-soft: #64748b;
+  --text-muted: #94a3b8;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --emerald: #10b981;
+  --emerald-ghost: rgba(16, 185, 129, 0.08);
+  --emerald-glow: rgba(16, 185, 129, 0.1);
+  --amber: #f59e0b;
+  --divider: rgba(15, 23, 42, 0.06);
+  --card-shadow: none;
+  --card-shadow-hover: 0 24px 48px -12px rgba(16, 185, 129, 0.15);
+  --overlay: rgba(15, 23, 42, 0.03);
+  --search-bg: #f1f5f9;
+  --input-border: transparent;
+  --strip-bg: #fafafa;
+}
+
+.dark {
+  --bg: #080c14;
+  --bg-soft: #0d111c;
+  --text: #f1f5f9;
+  --text-soft: #8896b0;
+  --text-muted: #5c6a82;
+  --surface: #0f1522;
+  --surface-hover: #171f30;
+  --emerald: #34d399;
+  --emerald-ghost: rgba(52, 211, 153, 0.1);
+  --emerald-glow: rgba(52, 211, 153, 0.12);
+  --amber: #fbbf24;
+  --divider: rgba(255, 255, 255, 0.04);
+  --card-shadow: none;
+  --card-shadow-hover: 0 24px 48px -12px rgba(52, 211, 153, 0.12);
+  --overlay: rgba(255, 255, 255, 0.02);
+  --search-bg: #171f30;
+  --input-border: transparent;
+  --strip-bg: #0d111c;
+}
+
+::-moz-selection {
+  background: var(--emerald);
+  color: #fff;
+}
+
+::selection {
+  background: var(--emerald);
+  color: #fff;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* ─── Header ─── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--divider);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+.header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--emerald);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo span {
+  font-weight: 300;
+  color: var(--text);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn-icon:hover {
+  background: var(--overlay);
+  color: var(--text);
+}
+
+.btn-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── Search ─── */
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.search-input {
+  width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: var(--search-bg);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text);
+  outline: none;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1), padding 0.35s ease, background 0.35s ease;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input.open {
+  width: 200px;
+  padding: 8px 14px;
+}
+
+.search-input.open + .search-btn {
+  margin-left: 0;
+}
+
+.search-btn {
+  flex-shrink: 0;
+}
+
+/* ─── Category Strip ─── */
+.category-strip {
+  background: var(--strip-bg);
+  border-bottom: 1px solid var(--divider);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
+  position: sticky;
+  top: 64px;
+  z-index: 99;
+}
+
+.strip-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.strip-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.category-pill:hover {
+  background: var(--emerald-ghost);
+  color: var(--emerald);
+}
+
+.category-pill.active {
+  background: var(--emerald);
+  color: #fff;
+}
+
+.category-pill:active {
+  transform: scale(0.96);
+}
+
+/* ─── Main Content ─── */
+main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ─── Products Grid (CSS Columns / Masonry) ─── */
+.products-grid {
+  column-count: 1;
+  column-gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .products-grid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .products-grid {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1400px) {
+  .products-grid {
+    column-count: 4;
+  }
+}
+
+/* ─── Product Card ─── */
+.product-card {
+  break-inside: avoid;
+  margin-bottom: 28px;
+  background: var(--surface);
+  border-radius: 16px;
+  overflow: hidden;
+  transform: translateY(0);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, background 0.4s ease;
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, background 0.4s ease;
+  transition-delay: var(--delay, 0s);
+  cursor: pointer;
+}
+
+.product-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.product-card:hover .add-to-cart {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card:hover .product-image::after {
+  opacity: 1;
+}
+
+.product-image {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+
+.product-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.04);
+}
+
+.add-to-cart {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #0f172a;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, color 0.2s ease;
+  z-index: 2;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.add-to-cart:hover {
+  background: var(--emerald);
+  color: #fff;
+}
+
+.add-to-cart svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.product-info {
+  padding: 18px 20px 22px;
+}
+
+.product-category {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--emerald);
+  margin-bottom: 4px;
+}
+
+.product-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.product-detail {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.product-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.price-cup {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.price-usd {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.price-usd::before {
+  content: '·';
+  margin-right: 8px;
+  color: var(--divider);
+}
+
+/* ─── Empty State ─── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.empty-state.show {
+  display: flex;
+}
+
+.empty-state svg {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 28px;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  max-width: 280px;
+}
+
+/* ─── Footer ─── */
+.site-footer {
+  border-top: 1px solid var(--divider);
+  padding: 20px 24px;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: border-color 0.4s ease, color 0.4s ease;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .product-card {
+    opacity: 1;
+    transform: none;
+    transition: box-shadow 0.2s ease, background 0.4s ease;
+  }
+
+  .product-card.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .product-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .product-card:hover .product-image img {
+    transform: none;
+  }
+
+  .add-to-cart {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .product-image::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (prefers-color-scheme: dark) {
+  .add-to-cart {
+    background: rgba(15, 23, 42, 0.9);
+    color: #f1f5f9;
+  }
+}
+
+/* ─── Animación de entrada ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 639px) {
+  .header-inner {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  .strip-inner {
+    padding: 12px 16px;
+  }
+
+  main {
+    padding: 24px 16px 60px;
+  }
+
+  .products-grid {
+    column-gap: 16px;
+  }
+
+  .product-card {
+    margin-bottom: 20px;
+    border-radius: 12px;
+  }
+
+  .product-info {
+    padding: 14px 16px 18px;
+  }
+
+  .product-name {
+    font-size: 1rem;
+  }
+
+  .search-input.open {
+    width: 140px;
+  }
+
+  .logo {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .search-input.open {
+    width: 100px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo">Garzon <span>Prime</span></a>
+    <div class="header-actions">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="search-input" placeholder="Buscar productos…" aria-label="Buscar productos">
+        <button class="btn-icon search-btn" id="search-btn" aria-label="Abrir búsqueda">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+      <button class="btn-icon" id="theme-toggle" aria-label="Cambiar tema">
+        <svg class="sun-icon" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="category-strip">
+  <div class="strip-inner" id="category-strip">
+    <button class="category-pill active" data-category="all">Todos</button>
+    <button class="category-pill" data-category="alimentos">Alimentos</button>
+    <button class="category-pill" data-category="bebidas">Bebidas</button>
+    <button class="category-pill" data-category="limpieza">Limpieza</button>
+    <button class="category-pill" data-category="cuidado-personal">Cuidado Personal</button>
+  </div>
+</section>
+
+<main>
+  <div class="products-grid" id="products-grid"></div>
+  <div class="empty-state" id="empty-state">
+    <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="60" cy="60" r="40"/>
+      <path d="M45 45 L75 75 M75 45 L45 75"/>
+      <path d="M30 60 L20 60 M100 60 L90 60 M60 30 L60 20 M60 100 L60 90" stroke-width="1"/>
+    </svg>
+    <h3>Sin resultados</h3>
+    <p>No encontramos productos en esta categoría. Intentá con otra.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  Garzon Prime &middot; La Habana, Cuba
+</footer>
+
+<script>
+const products = [
+  {
+    id: 1,
+    name: 'Arroz Sublime',
+    detail: 'Bolsa de 5 lb · Grano largo',
+    category: 'alimentos',
+    cupPrice: '450.00',
+    usdPrice: '4.50',
+    img: 'https://picsum.photos/id/292/600/750'
+  },
+  {
+    id: 2,
+    name: 'Frijoles Negros',
+    detail: 'Bolsa de 1 lb · Selectos',
+    category: 'alimentos',
+    cupPrice: '280.00',
+    usdPrice: '2.80',
+    img: 'https://picsum.photos/id/259/600/750'
+  },
+  {
+    id: 3,
+    name: 'Aceite de Girasol',
+    detail: 'Botella de 1 L · Refinado',
+    category: 'alimentos',
+    cupPrice: '650.00',
+    usdPrice: '6.50',
+    img: 'https://picsum.photos/id/360/600/750'
+  },
+  {
+    id: 4,
+    name: 'Leche en Polvo',
+    detail: 'Bolsa de 1 kg · Entera',
+    category: 'alimentos',
+    cupPrice: '890.00',
+    usdPrice: '8.90',
+    img: 'https://picsum.photos/id/30/600/750'
+  },
+  {
+    id: 5,
+    name: 'Café Serrano',
+    detail: 'Envase de 250 g · Tostado',
+    category: 'bebidas',
+    cupPrice: '520.00',
+    usdPrice: '5.20',
+    img: 'https://picsum.photos/id/431/600/750'
+  },
+  {
+    id: 6,
+    name: 'Pan Integral',
+    detail: 'Pieza de 500 g · Horneado hoy',
+    category: 'alimentos',
+    cupPrice: '180.00',
+    usdPrice: '1.80',
+    img: 'https://picsum.photos/id/369/600/750'
+  },
+  {
+    id: 7,
+    name: 'Huevos Frescos',
+    detail: 'Cartón de 30 unidades · Campo',
+    category: 'alimentos',
+    cupPrice: '350.00',
+    usdPrice: '3.50',
+    img: 'https://picsum.photos/id/64/600/750'
+  },
+  {
+    id: 8,
+    name: 'Jabón de Baño',
+    detail: 'Paquete de 3 · Glicerina',
+    category: 'cuidado-personal',
+    cupPrice: '290.00',
+    usdPrice: '2.90',
+    img: 'https://picsum.photos/id/106/600/750'
+  },
+  {
+    id: 9,
+    name: 'Detergente Líquido',
+    detail: 'Botella de 1 L · Ropa de color',
+    category: 'limpieza',
+    cupPrice: '420.00',
+    usdPrice: '4.20',
+    img: 'https://picsum.photos/id/381/600/750'
+  },
+  {
+    id: 10,
+    name: 'Pasta Dental',
+    detail: 'Tubo de 150 g · Menta',
+    category: 'cuidado-personal',
+    cupPrice: '230.00',
+    usdPrice: '2.30',
+    img: 'https://picsum.photos/id/108/600/750'
+  },
+  {
+    id: 11,
+    name: 'Refresco de Cola',
+    detail: 'Botella retornable 2 L',
+    category: 'bebidas',
+    cupPrice: '190.00',
+    usdPrice: '1.90',
+    img: 'https://picsum.photos/id/154/600/750'
+  },
+  {
+    id: 12,
+    name: 'Galletas de Soda',
+    detail: 'Paquete de 200 g · Saladas',
+    category: 'alimentos',
+    cupPrice: '165.00',
+    usdPrice: '1.65',
+    img: 'https://picsum.photos/id/364/600/750'
+  }
+];
+
+const categoryLabels = {
+  'alimentos': 'Alimentos',
+  'bebidas': 'Bebidas',
+  'limpieza': 'Limpieza',
+  'cuidado-personal': 'Cuidado Personal'
+};
+
+const grid = document.getElementById('products-grid');
+const empty = document.getElementById('empty-state');
+const input = document.getElementById('search-input');
+const searchBtn = document.getElementById('search-btn');
+
+let activeCategory = 'all';
+let searchQuery = '';
+
+function renderProducts(category, query) {
+  const filtered = products.filter(p => {
+    const matchCategory = category === 'all' || p.category === category;
+    const matchSearch = !query || p.name.toLowerCase().includes(query.toLowerCase()) || p.detail.toLowerCase().includes(query.toLowerCase());
+    return matchCategory && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+
+  empty.classList.remove('show');
+
+  grid.innerHTML = filtered.map((p, i) => `
+    <article class="product-card" data-category="${p.category}" style="--delay: ${i * 0.04}s">
+      <div class="product-image">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <button class="add-to-cart" aria-label="Añadir ${p.name} al carrito">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          Añadir
+        </button>
+      </div>
+      <div class="product-info">
+        <span class="product-category">${categoryLabels[p.category] || p.category}</span>
+        <h3 class="product-name">${p.name}</h3>
+        <span class="product-detail">${p.detail}</span>
+        <div class="product-prices">
+          <span class="price-cup">CUP ${p.cupPrice}</span>
+          <span class="price-usd">$${p.usdPrice}</span>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  observeCards();
+}
+
+function observeCards() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.product-card').forEach(c => c.classList.add('visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.product-card').forEach(card => observer.observe(card));
+}
+
+// ─── Category pills ───
+document.querySelectorAll('.category-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeCategory = pill.dataset.category;
+    renderProducts(activeCategory, searchQuery);
+    document.getElementById('category-strip').scrollTo({ left: pill.offsetLeft - 24, behavior: 'smooth' });
+  });
+});
+
+// ─── Search ───
+searchBtn.addEventListener('click', () => {
+  const isOpen = input.classList.contains('open');
+  if (isOpen) {
+    input.classList.remove('open');
+    input.value = '';
+    searchQuery = '';
+    renderProducts(activeCategory, searchQuery);
+    setTimeout(() => input.blur(), 100);
+  } else {
+    input.classList.add('open');
+    setTimeout(() => input.focus(), 350);
+  }
+});
+
+input.addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim();
+  renderProducts(activeCategory, searchQuery);
+});
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    input.classList.remove('open');
+    input.value = '';
+    searchQuery = '';
+    renderProducts(activeCategory, searchQuery);
+    input.blur();
+  }
+});
+
+// ─── Dark Mode ───
+const themeToggle = document.getElementById('theme-toggle');
+const sunIcon = themeToggle.querySelector('.sun-icon');
+const moonIcon = themeToggle.querySelector('.moon-icon');
+
+function setTheme(dark) {
+  if (dark) {
+    document.documentElement.classList.add('dark');
+    sunIcon.style.display = 'none';
+    moonIcon.style.display = 'block';
+  } else {
+    document.documentElement.classList.remove('dark');
+    sunIcon.style.display = 'block';
+    moonIcon.style.display = 'none';
+  }
+  localStorage.setItem('garzon-prime-theme', dark ? 'dark' : 'light');
+}
+
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+const saved = localStorage.getItem('garzon-prime-theme');
+
+if (saved) {
+  setTheme(saved === 'dark');
+} else {
+  setTheme(prefersDark.matches);
+}
+
+themeToggle.addEventListener('click', () => {
+  setTheme(!document.documentElement.classList.contains('dark'));
+});
+
+prefersDark.addEventListener('change', (e) => {
+  if (!localStorage.getItem('garzon-prime-theme')) {
+    setTheme(e.matches);
+  }
+});
+
+// ─── Init ───
+renderProducts('all', '');
+</script>
+</body>
+</html>

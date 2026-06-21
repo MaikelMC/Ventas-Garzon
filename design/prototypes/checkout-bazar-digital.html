@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout · Ventas Garzón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9pt,400;0,9pt,500;0,9pt,600;0,9pt,700;1,9pt,400&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --primary:#10b981;--primary-deep:#059669;--primary-glow:rgba(16,185,129,0.35);
+    --accent:#f59e0b;--accent-deep:#d97706;
+    --surface:#ffffff;--surface-alt:#f1f5f9;--surface-page:#f8fafc;
+    --ink:#1f2937;--ink-muted:#64748b;--border:#e2e8f0;--border-light:#f1f5f9;
+    --danger:#ef4444;--danger-bg:#fef2f2;--danger-border:#fecaca;
+    --success-bg:#f0fdf4;--success-border:#bbf7d0;
+    --card-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+    --card-shadow-hover:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+    --shadow-prominent:0 10px 25px rgba(0,0,0,.08);
+    --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:24px;--radius-full:9999px;
+    --font-display:'Outfit',sans-serif;--font-body:'DM Sans',sans-serif;
+    --spring-fast:cubic-bezier(.34,1.56,.64,1);
+    --ease-out:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --surface:#1e293b;--surface-alt:#0f172a;--surface-page:#0f172a;
+    --ink:#f1f5f9;--ink-muted:#94a3b8;--border:#334155;--border-light:#1e293b;
+    --danger-bg:#450a0a;--danger-border:#991b1b;
+    --success-bg:#052e16;--success-border:#166534;
+    --card-shadow:0 1px 3px rgba(0,0,0,.3);--card-shadow-hover:0 4px 12px rgba(0,0,0,.4);
+    --shadow-prominent:0 10px 25px rgba(0,0,0,.5);
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);background:var(--surface-page);color:var(--ink);
+    line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+  }
+  /* noise overlay */
+  .noise::before{
+    content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+    opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat:repeat;background-size:256px 256px;
+  }
+  [data-theme="dark"] .noise::before{opacity:.04}
+  .theme-toggle{
+    position:fixed;top:20px;right:20px;z-index:100;width:44px;height:44px;
+    border-radius:var(--radius-full);border:1px solid var(--border);
+    background:var(--surface);color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;transition:.3s var(--ease-out);box-shadow:var(--card-shadow);
+  }
+  .theme-toggle:hover{box-shadow:var(--card-shadow-hover);transform:scale(1.05)}
+  .theme-toggle:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .theme-toggle:active{transform:scale(.95)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* container */
+  .checkout-page{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+  @media(min-width:768px){.checkout-page{padding:40px 32px 80px}}
+
+  /* header */
+  .checkout-header{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+  @media(min-width:768px){.checkout-header{margin-bottom:48px}}
+  .checkout-header-icon{
+    width:48px;height:48px;border-radius:var(--radius-lg);
+    background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow:0 4px 10px var(--primary-glow);
+  }
+  .checkout-header-icon svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .checkout-header-text{}
+  .checkout-header-label{
+    font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--primary);font-family:var(--font-display);margin-bottom:2px;
+  }
+  .checkout-header-title{
+    font-family:var(--font-display);font-weight:700;font-size:clamp(1.5rem,4vw,2.25rem);
+    color:var(--ink);line-height:1.15;
+  }
+
+  /* grid */
+  .checkout-grid{display:grid;gap:24px}
+  @media(min-width:900px){.checkout-grid{grid-template-columns:1fr 380px;gap:32px}}
+
+  /* cards */
+  .card{
+    background:var(--surface);border-radius:var(--radius-xl);
+    border:1px solid var(--border);padding:20px;
+    box-shadow:var(--card-shadow);transition:box-shadow .3s var(--ease-out);
+  }
+  @media(min-width:768px){.card{padding:28px}}
+  .card-title{
+    font-family:var(--font-display);font-weight:600;font-size:1.125rem;
+    color:var(--ink);margin-bottom:20px;display:flex;align-items:center;gap:8px;
+  }
+  .card-title svg{width:20px;height:20px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* form */
+  .form-group{margin-bottom:16px}
+  .form-group:last-of-type{margin-bottom:0}
+  .form-label{
+    display:block;font-size:.875rem;font-weight:500;color:var(--ink);
+    margin-bottom:6px;
+  }
+  .form-label .required{color:var(--danger);margin-left:2px}
+  .form-input,.form-textarea{
+    width:100%;padding:12px 14px;font-family:var(--font-body);font-size:.9375rem;
+    color:var(--ink);background:var(--surface-page);border:1.5px solid var(--border);
+    border-radius:var(--radius-md);outline:none;transition:.25s var(--ease-out);
+    -webkit-appearance:none;appearance:none;
+  }
+  .form-input:hover,.form-textarea:hover{border-color:#94a3b8}
+  .form-input:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+  .form-input.error,.form-textarea.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+  .form-input.error:focus,.form-textarea.error:focus{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.15)}
+  .form-textarea{resize:vertical;min-height:80px}
+  .form-error-text{font-size:.8rem;color:var(--danger);margin-top:4px;display:flex;align-items:center;gap:4px}
+  .form-error-text svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+  /* radio group */
+  .radio-group{display:flex;flex-direction:column;gap:8px}
+  @media(min-width:400px){.radio-group{flex-direction:row}}
+  .radio-option{
+    position:relative;flex:1;display:flex;align-items:center;gap:10px;
+    padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius-md);
+    background:var(--surface-page);cursor:pointer;transition:.25s var(--ease-out);
+    -webkit-user-select:none;user-select:none;
+  }
+  .radio-option:hover{border-color:#94a3b8;background:var(--surface)}
+  .radio-option input{position:absolute;opacity:0;width:0;height:0}
+  .radio-option:has(input:checked){
+    border-color:var(--primary);background:rgba(16,185,129,.06);
+    box-shadow:0 0 0 3px rgba(16,185,129,.12);
+  }
+  .radio-dot{
+    width:18px;height:18px;border-radius:50%;border:2px solid #cbd5e1;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    transition:.25s var(--ease-out);
+  }
+  .radio-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:transparent;transition:.25s var(--ease-out)}
+  .radio-option:has(input:checked) .radio-dot{border-color:var(--primary)}
+  .radio-option:has(input:checked) .radio-dot::after{background:var(--primary)}
+  .radio-label{font-size:.9375rem;font-weight:500;color:var(--ink)}
+  .radio-desc{font-size:.8rem;color:var(--ink-muted)}
+
+  /* summary sidebar */
+  .summary-sidebar{position:sticky;top:24px}
+  .summary-items{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;max-height:360px;overflow-y:auto}
+  .summary-item{display:flex;gap:12px;align-items:center}
+  .summary-item-img{
+    width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;
+    background:var(--surface-alt);border:1px solid var(--border);
+  }
+  .summary-item-info{flex:1;min-width:0}
+  .summary-item-name{font-size:.875rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .summary-item-qty{font-size:.8rem;color:var(--ink-muted);margin-top:1px}
+  .summary-item-price{font-size:.875rem;font-weight:600;color:var(--ink);white-space:nowrap;margin-left:8px}
+  .summary-divider{height:1px;background:var(--border);margin:12px 0}
+  .summary-line{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+  .summary-line-label{font-size:.875rem;color:var(--ink-muted)}
+  .summary-line-value{font-size:.875rem;color:var(--ink);font-weight:500}
+  .summary-line-total{padding-top:12px;margin-top:4px;border-top:1.5px solid var(--border)}
+  .summary-line-total .summary-line-label{font-size:1rem;font-weight:600;color:var(--ink)}
+  .summary-line-total .summary-line-value{font-size:1.125rem;font-weight:700;color:var(--primary)}
+
+  /* button primary */
+  .btn-primary{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;padding:14px 28px;border:none;border-radius:var(--radius-full);
+    background:var(--primary);color:#fff;font-family:var(--font-body);
+    font-size:1rem;font-weight:600;cursor:pointer;
+    transition:.3s var(--ease-out);box-shadow:0 2px 8px var(--primary-glow);
+    -webkit-user-select:none;user-select:none;
+  }
+  .btn-primary:hover:not(:disabled){
+    background:var(--primary-deep);transform:translateY(-1px);
+    box-shadow:0 6px 16px var(--primary-glow);
+  }
+  .btn-primary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  .btn-primary:active:not(:disabled){transform:translateY(0);box-shadow:0 2px 8px var(--primary-glow)}
+  .btn-primary:disabled{background:#94a3b8;cursor:not-allowed;box-shadow:none;transform:none}
+  .btn-primary .spinner{
+    width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;
+  }
+
+  /* link back */
+  .link-back{
+    display:inline-flex;align-items:center;gap:6px;font-size:.875rem;
+    color:var(--primary);text-decoration:none;font-weight:500;
+    transition:.2s var(--ease-out);margin-top:16px;
+  }
+  .link-back:hover{color:var(--primary-deep);gap:10px}
+  .link-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .2s var(--ease-out)}
+
+  /* alert */
+  .alert{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:14px 16px;border-radius:var(--radius-md);font-size:.875rem;line-height:1.5;
+  }
+  .alert svg{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+  .alert-error{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+  .alert-success{background:var(--success-bg);border:1px solid var(--success-border);color:#166534}
+  [data-theme="dark"] .alert-success{color:#4ade80}
+
+  /* empty state */
+  .empty-state{text-align:center;padding:48px 20px}
+  .empty-state-icon{
+    width:72px;height:72px;margin:0 auto 16px;border-radius:50%;
+    background:var(--surface-alt);display:flex;align-items:center;justify-content:center;
+    border:1.5px solid var(--border);
+  }
+  .empty-state-icon svg{width:32px;height:32px;stroke:#94a3b8;fill:none;stroke-width:1.5}
+  .empty-state-title{font-family:var(--font-display);font-weight:600;font-size:1.25rem;color:var(--ink);margin-bottom:6px}
+  .empty-state-desc{font-size:.9375rem;color:var(--ink-muted);margin-bottom:4px}
+
+  /* success state */
+  .success-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .success-card{
+    background:var(--surface);border-radius:var(--radius-xl);
+    border:1px solid var(--border);padding:40px 32px;max-width:440px;width:100%;
+    text-align:center;box-shadow:var(--shadow-prominent);
+  }
+  @media(min-width:500px){.success-card{padding:56px 48px}}
+  .success-check-wrap{
+    width:80px;height:80px;margin:0 auto 24px;border-radius:50%;
+    background:var(--primary);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 0 rgba(16,185,129,.5);animation:pulse-ring 1.5s ease-out infinite;
+  }
+  .success-check-wrap svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+  .success-check-wrap .check-path{stroke-dasharray:48;stroke-dashoffset:48;animation:draw-check .6s .3s var(--spring-fast) forwards}
+  .success-title{font-family:var(--font-display);font-weight:700;font-size:1.75rem;color:var(--ink);margin-bottom:8px}
+  .success-order{font-size:.875rem;color:var(--ink-muted);margin-bottom:24px}
+  .success-order strong{color:var(--ink)}
+  .success-desc{font-size:.9375rem;color:var(--ink-muted);line-height:1.6;margin-bottom:32px}
+
+  /* skeleton */
+  .skeleton{background:var(--border);border-radius:var(--radius-sm);position:relative;overflow:hidden}
+  .skeleton::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 1.5s infinite}
+  .skeleton-card{background:var(--surface);border-radius:var(--radius-xl);border:1px solid var(--border);padding:28px;box-shadow:var(--card-shadow)}
+
+  /* animations */
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  @keyframes draw-check{to{stroke-dashoffset:0}}
+  @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}70%{box-shadow:0 0 0 20px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+  @keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fade-in{from{opacity:0}to{opacity:1}}
+  @keyframes scale-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+  .anim-fade-up{animation:fade-up .5s var(--ease-out) both}
+  .anim-fade-up-1{animation-delay:.05s}
+  .anim-fade-up-2{animation-delay:.12s}
+  .anim-fade-up-3{animation-delay:.2s}
+  .anim-fade-up-4{animation-delay:.28s}
+  .anim-fade-up-5{animation-delay:.35s}
+  .anim-scale-in{animation:scale-in .4s var(--ease-out) both}
+
+  /* scroll reveal - intersection observer will add .revealed */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+  .reveal.revealed{opacity:1;transform:translateY(0)}
+  .reveal-delay-1{transition-delay:.06s}
+  .reveal-delay-2{transition-delay:.14s}
+  .reveal-delay-3{transition-delay:.22s}
+  .reveal-delay-4{transition-delay:.3s}
+
+  /* responsive */
+  .order-summary-mobile{
+    display:block;
+  }
+  @media(min-width:900px){.order-summary-mobile{display:none}}
+  .order-summary-desktop{
+    display:none;
+  }
+  @media(min-width:900px){.order-summary-desktop{display:block}}
+
+  /* utility: hide sections */
+  .section-hidden{display:none!important}
+
+  /* reduced motion */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .reveal{opacity:1;transform:none}
+    .skeleton::after{animation:none}
+  }
+
+  /* scrollbar */
+  .summary-items::-webkit-scrollbar{width:4px}
+  .summary-items::-webkit-scrollbar-track{background:transparent}
+  .summary-items::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+  .summary-items::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+  @media(max-width:899px){
+    .checkout-header{padding-top:16px}
+    .btn-primary{padding:16px 24px}
+    .summary-sidebar .card{padding:16px}
+  }
+</style>
+</head>
+<body class="noise">
+
+<!-- Theme toggle -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar modo claro/oscuro">
+  <span id="themeIcon">🌙</span>
+</button>
+
+<!-- ===== SECTIONS ===== -->
+
+<!-- 1. LOADING STATE -->
+<div id="sectionLoading" class="checkout-page">
+  <div class="checkout-header">
+    <div class="checkout-header-icon" style="background:var(--border);box-shadow:none"><span style="opacity:0">i</span></div>
+    <div>
+      <div class="skeleton" style="width:80px;height:11px;margin-bottom:6px;border-radius:4px"></div>
+      <div class="skeleton" style="width:220px;height:28px;border-radius:6px"></div>
+    </div>
+  </div>
+  <div class="checkout-grid">
+    <div class="skeleton-card">
+      <div class="skeleton" style="width:140px;height:20px;margin-bottom:24px;border-radius:6px"></div>
+      <div style="display:grid;gap:16px">
+        <div><div class="skeleton" style="width:90px;height:12px;margin-bottom:8px;border-radius:4px"></div><div class="skeleton" style="width:100%;height:46px;border-radius:12px"></div></div>
+        <div><div class="skeleton" style="width:70px;height:12px;margin-bottom:8px;border-radius:4px"></div><div class="skeleton" style="width:100%;height:46px;border-radius:12px"></div></div>
+        <div><div class="skeleton" style="width:110px;height:12px;margin-bottom:8px;border-radius:4px"></div><div class="skeleton" style="width:100%;height:80px;border-radius:12px"></div></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton" style="width:120px;height:20px;margin-bottom:20px;border-radius:6px"></div>
+      <div style="display:grid;gap:14px">
+        <div style="display:flex;gap:12px;align-items:center"><div class="skeleton" style="width:52px;height:52px;border-radius:8px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:70%;height:12px;border-radius:4px;margin-bottom:6px"></div><div class="skeleton" style="width:40%;height:10px;border-radius:4px"></div></div><div class="skeleton" style="width:50px;height:12px;border-radius:4px"></div></div>
+        <div style="display:flex;gap:12px;align-items:center"><div class="skeleton" style="width:52px;height:52px;border-radius:8px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:60%;height:12px;border-radius:4px;margin-bottom:6px"></div><div class="skeleton" style="width:30%;height:10px;border-radius:4px"></div></div><div class="skeleton" style="width:50px;height:12px;border-radius:4px"></div></div>
+        <div style="display:flex;gap:12px;align-items:center"><div class="skeleton" style="width:52px;height:52px;border-radius:8px;flex-shrink:0"></div><div style="flex:1"><div class="skeleton" style="width:55%;height:12px;border-radius:4px;margin-bottom:6px"></div><div class="skeleton" style="width:35%;height:10px;border-radius:4px"></div></div><div class="skeleton" style="width:50px;height:12px;border-radius:4px"></div></div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><div class="skeleton" style="width:60px;height:12px;border-radius:4px"></div><div class="skeleton" style="width:70px;height:12px;border-radius:4px"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><div class="skeleton" style="width:80px;height:12px;border-radius:4px"></div><div class="skeleton" style="width:70px;height:12px;border-radius:4px"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px"><div class="skeleton" style="width:50px;height:12px;border-radius:4px"></div><div class="skeleton" style="width:70px;height:12px;border-radius:4px"></div></div>
+        <div style="display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);margin-top:4px"><div class="skeleton" style="width:40px;height:16px;border-radius:4px"></div><div class="skeleton" style="width:80px;height:18px;border-radius:4px"></div></div>
+      </div>
+      <div class="skeleton" style="width:100%;height:50px;border-radius:9999px;margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. EMPTY CART -->
+<div id="sectionEmpty" class="section-hidden">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px">
+    <div class="anim-scale-in" style="max-width:420px;width:100%">
+      <div class="card" style="text-align:center;padding:48px 32px">
+        <div class="empty-state-icon" style="margin:0 auto 20px">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <h2 class="empty-state-title">Tu carrito está vacío</h2>
+        <p class="empty-state-desc">Agrega productos desde el catálogo para poder finalizar tu compra.</p>
+        <a href="#" class="link-back" id="emptyCartLink">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+          Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3 + 4 + 5. CHECKOUT FORM + SUMMARY + SUBMIT -->
+<div id="sectionCheckout" class="section-hidden">
+  <div class="checkout-page">
+    <div class="checkout-header anim-fade-up anim-fade-up-1">
+      <div class="checkout-header-icon">
+        <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <div class="checkout-header-text">
+        <div class="checkout-header-label">Checkout</div>
+        <h1 class="checkout-header-title">Finalizar Compra</h1>
+      </div>
+    </div>
+
+    <div class="checkout-grid">
+      <!-- LEFT: FORM -->
+      <div>
+        <form id="checkoutForm" novalidate>
+          <div class="card reveal" style="margin-bottom:20px">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Datos del Cliente
+            </h2>
+            <div class="form-group">
+              <label class="form-label" for="inputNombre">Nombre completo <span class="required">*</span></label>
+              <input class="form-input" id="inputNombre" type="text" required placeholder="Omar Pérez Rodríguez" autocomplete="name">
+              <div class="form-error-text section-hidden" id="errorNombre"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Este campo es obligatorio</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inputTelefono">Teléfono <span class="required">*</span></label>
+              <input class="form-input" id="inputTelefono" type="tel" required placeholder="+53 5 1234567" autocomplete="tel">
+              <div class="form-error-text section-hidden" id="errorTelefono"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Ingresa un número cubano válido (ej: +53 5 1234567)</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inputDireccion">Dirección de entrega <span class="required">*</span></label>
+              <textarea class="form-textarea" id="inputDireccion" required placeholder="Calle, número, reparto, municipio, provincia" autocomplete="street-address"></textarea>
+              <div class="form-error-text section-hidden" id="errorDireccion"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Indica una dirección de entrega</div>
+            </div>
+            <div class="form-group" style="margin-top:4px">
+              <label class="form-label" for="inputNotas">Notas del pedido</label>
+              <textarea class="form-textarea" id="inputNotas" placeholder="Ej: Prefiero que llamen antes de llegar, entregar en la puerta de atrás…" style="min-height:68px"></textarea>
+            </div>
+          </div>
+
+          <div class="card reveal reveal-delay-1">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Método de Pago
+            </h2>
+            <div class="radio-group" id="paymentMethod">
+              <label class="radio-option">
+                <input type="radio" name="payment" value="efectivo" checked>
+                <span class="radio-dot"></span>
+                <div><div class="radio-label">Efectivo</div><div class="radio-desc">Paga en CUP o MLC al recibir</div></div>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="payment" value="transferencia">
+                <span class="radio-dot"></span>
+                <div><div class="radio-label">Transferencia</div><div class="radio-desc">Transferencia bancaria o por celular</div></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- error alert (inline) -->
+          <div id="checkoutError" class="section-hidden" style="margin-top:16px">
+            <div class="alert alert-error anim-fade-up">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                <div id="checkoutErrorText">Ocurrió un error al procesar tu pedido.</div>
+                <button type="button" id="retryBtn" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;font-size:.875rem;font-weight:600;padding:0;margin-top:4px">Intentar de nuevo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="btn-primary reveal reveal-delay-2" id="submitBtn" style="margin-top:20px">
+            <span id="submitBtnText">Confirmar Pedido</span>
+            <span id="submitBtnSpinner" class="section-hidden"><span class="spinner"></span></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT: SUMMARY (desktop) -->
+      <div class="order-summary-desktop">
+        <div class="summary-sidebar reveal reveal-delay-1">
+          <div class="card">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              Resumen del Pedido
+            </h2>
+            <div class="summary-items" id="summaryItems"></div>
+            <div class="summary-divider"></div>
+            <div class="summary-line"><span class="summary-line-label">Subtotal</span><span class="summary-line-value" id="summarySubtotal">CUP 0.00</span></div>
+            <div class="summary-line"><span class="summary-line-label">IVA (19%)</span><span class="summary-line-value" id="summaryIva">CUP 0.00</span></div>
+            <div class="summary-line"><span class="summary-line-label">Envío</span><span class="summary-line-value" id="summaryEnvio">Gratis</span></div>
+            <div class="summary-line summary-line-total"><span class="summary-line-label">Total</span><span class="summary-line-value" id="summaryTotal">CUP 0.00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY (mobile) -->
+    <div class="order-summary-mobile reveal reveal-delay-2" style="margin-top:20px">
+      <div class="card">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Resumen del Pedido
+        </h2>
+        <div class="summary-items" id="summaryItemsMobile"></div>
+        <div class="summary-divider"></div>
+        <div class="summary-line"><span class="summary-line-label">Subtotal</span><span class="summary-line-value" id="summarySubtotalMobile">CUP 0.00</span></div>
+        <div class="summary-line"><span class="summary-line-label">IVA (19%)</span><span class="summary-line-value" id="summaryIvaMobile">CUP 0.00</span></div>
+        <div class="summary-line"><span class="summary-line-label">Envío</span><span class="summary-line-value" id="summaryEnvioMobile">Gratis</span></div>
+        <div class="summary-line summary-line-total"><span class="summary-line-value" id="summaryTotalMobile">CUP 0.00</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. SUCCESS STATE -->
+<div id="sectionSuccess" class="section-hidden">
+  <div class="success-screen">
+    <div class="success-card anim-scale-in">
+      <div class="success-check-wrap">
+        <svg viewBox="0 0 24 24"><polyline class="check-path" points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="success-title">¡Pedido Recibido!</h2>
+      <p class="success-order">Número de pedido: <strong id="orderNumber">VG-4821</strong></p>
+      <p class="success-desc">Hemos recibido tu pedido correctamente. Te contactaremos para coordinar la entrega y el pago.</p>
+      <a href="#" class="btn-primary" id="viewOrdersBtn" style="text-decoration:none">
+        Ver Mis Pedidos
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const STORAGE_KEY = 'vg_checkout_demo';
+
+  // --- Sample cart data ---
+  const SAMPLE_CART = [
+    { id:1, name:'Arroz Superior 1kg', qty:2, price:185.00, img:'https://picsum.photos/seed/arroz/120/120' },
+    { id:2, name:'Aceite Vegetal 900ml', qty:1, price:320.00, img:'https://picsum.photos/seed/aceite/120/120' },
+    { id:3, name:'Jabón de Baño Cuba', qty:3, price:45.00, img:'https://picsum.photos/seed/jabon/120/120' },
+    { id:4, name:'Leche en Polvo 400g', qty:1, price:215.00, img:'https://picsum.photos/seed/leche/120/120' },
+  ];
+
+  const SHIPPING_COST = 0; // gratis
+  const IVA_RATE = 0.19;
+
+  // DOM refs
+  const $ = id => document.getElementById(id);
+  const sections = {
+    loading: $('sectionLoading'),
+    empty: $('sectionEmpty'),
+    checkout: $('sectionCheckout'),
+    success: $('sectionSuccess'),
+  };
+  const summaryItems = $('summaryItems');
+  const summaryItemsMobile = $('summaryItemsMobile');
+  const summarySubtotal = $('summarySubtotal');
+  const summaryIva = $('summaryIva');
+  const summaryEnvio = $('summaryEnvio');
+  const summaryTotal = $('summaryTotal');
+  const summarySubtotalM = $('summarySubtotalMobile');
+  const summaryIvaM = $('summaryIvaMobile');
+  const summaryEnvioM = $('summaryEnvioMobile');
+  const summaryTotalM = $('summaryTotalMobile');
+  const checkoutError = $('checkoutError');
+  const checkoutErrorText = $('checkoutErrorText');
+  const submitBtn = $('submitBtn');
+  const submitBtnText = $('submitBtnText');
+  const submitBtnSpinner = $('submitBtnSpinner');
+  const orderNumberEl = $('orderNumber');
+  const checkoutForm = $('checkoutForm');
+  const themeToggle = $('themeToggle');
+  const themeIcon = $('themeIcon');
+
+  // form error elements
+  const errorNombre = $('errorNombre');
+  const errorTelefono = $('errorTelefono');
+  const errorDireccion = $('errorDireccion');
+  const inputNombre = $('inputNombre');
+  const inputTelefono = $('inputTelefono');
+  const inputDireccion = $('inputDireccion');
+
+  let currentCart = [];
+  let isSubmitting = false;
+  let currentOrderNumber = 'VG-4821';
+
+  // --- Helpers ---
+  function formatPrice(amount) {
+    return 'CUP ' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function showSection(name) {
+    Object.keys(sections).forEach(k => sections[k].classList.toggle('section-hidden', k !== name));
+  }
+
+  // --- Cart rendering ---
+  function renderSummary(cart) {
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const iva = subtotal * IVA_RATE;
+    const total = subtotal + iva + SHIPPING_COST;
+
+    const renderItems = (container) => {
+      container.innerHTML = cart.map(item => `
+        <div class="summary-item">
+          <img class="summary-item-img" src="${item.img}" alt="${item.name}" loading="lazy">
+          <div class="summary-item-info">
+            <div class="summary-item-name">${item.name}</div>
+            <div class="summary-item-qty">Cant: ${item.qty}</div>
+          </div>
+          <div class="summary-item-price">${formatPrice(item.price * item.qty)}</div>
+        </div>
+      `).join('');
+    };
+
+    renderItems(summaryItems);
+    renderItems(summaryItemsMobile);
+
+    const envioText = SHIPPING_COST === 0 ? 'Gratis' : formatPrice(SHIPPING_COST);
+
+    [summarySubtotal, summarySubtotalM].forEach(el => el.textContent = formatPrice(subtotal));
+    [summaryIva, summaryIvaM].forEach(el => el.textContent = formatPrice(iva));
+    [summaryEnvio, summaryEnvioM].forEach(el => el.textContent = envioText);
+    [summaryTotal, summaryTotalM].forEach(el => el.textContent = formatPrice(total));
+  }
+
+  // --- Validation ---
+  function validateField(input, errorEl, test) {
+    const valid = test(input.value.trim());
+    input.classList.toggle('error', !valid);
+    errorEl.classList.toggle('section-hidden', valid);
+    return valid;
+  }
+
+  function validateAll() {
+    const v1 = validateField(inputNombre, errorNombre, v => v.length >= 2);
+    const v2 = validateField(inputTelefono, errorTelefono, v => /^(\+53\s?)?\d[\d\s]{5,14}$/.test(v.replace(/\s/g,'')));
+    const v3 = validateField(inputDireccion, errorDireccion, v => v.length >= 5);
+    return v1 && v2 && v3;
+  }
+
+  // --- Show / hide error alert ---
+  function showError(msg) {
+    checkoutErrorText.textContent = msg || 'Ocurrió un error al procesar tu pedido.';
+    checkoutError.classList.remove('section-hidden');
+  }
+
+  function hideError() {
+    checkoutError.classList.add('section-hidden');
+  }
+
+  // --- Theme ---
+  function getPreferredTheme() {
+    const stored = localStorage.getItem('vg_theme');
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light';
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('vg_theme', theme);
+  }
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  });
+
+  // Init theme
+  setTheme(getPreferredTheme());
+
+  // --- Intersection Observer for reveals ---
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+    }, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
+  }
+
+  // --- Demo flow ---
+
+  // 1. Show loading, then transition to checkout
+  showSection('loading');
+  setTimeout(() => {
+    // Use stored cart or default
+    currentCart = SAMPLE_CART;
+    renderSummary(currentCart);
+    showSection('checkout');
+    // trigger reveals again after display change
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('revealed');
+      });
+    });
+  }, 1800);
+
+  // 2. Empty cart link
+  $('emptyCartLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    // simulate empty by going to loading then empty
+    // Actually let's just show empty since we already have items
+    // Make a demo: clear cart and show empty
+    currentCart = [];
+    renderSummary(currentCart);
+    showSection('empty');
+  });
+
+  // 3. Form submit
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    hideError();
+
+    if (!validateAll()) {
+      // focus first error
+      const firstError = checkoutForm.querySelector('.form-input.error, .form-textarea.error');
+      if (firstError) firstError.focus();
+      return;
+    }
+
+    // Submit
+    isSubmitting = true;
+    submitBtn.disabled = true;
+    submitBtnText.textContent = 'Procesando...';
+    submitBtnSpinner.classList.remove('section-hidden');
+
+    // Simulate API call
+    setTimeout(() => {
+      // Random success or fail (90% success)
+      const ok = Math.random() > 0.15;
+
+      if (ok) {
+        // Success
+        currentOrderNumber = 'VG-' + (4821 + Math.floor(Math.random() * 100));
+        orderNumberEl.textContent = currentOrderNumber;
+        showSection('success');
+        // trigger pulse ring re-animation
+        const wrap = document.querySelector('.success-check-wrap');
+        wrap.style.animation = 'none';
+        void wrap.offsetWidth;
+        wrap.style.animation = '';
+      } else {
+        // Error
+        const errors = [
+          'No pudimos procesar tu pedido. Revisa los datos e inténtalo de nuevo.',
+          'Error de conexión con la pasarela de pago. Por favor, intenta más tarde.',
+          'El servidor no respondió a tiempo. Tu pedido no fue procesado.',
+        ];
+        showError(errors[Math.floor(Math.random() * errors.length)]);
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        submitBtnText.textContent = 'Confirmar Pedido';
+        submitBtnSpinner.classList.add('section-hidden');
+      }
+    }, 2000);
+  });
+
+  // 4. Retry button
+  $('retryBtn').addEventListener('click', () => {
+    hideError();
+    submitBtn.click();
+  });
+
+  // 5. Live validation on blur
+  [inputNombre, inputTelefono, inputDireccion].forEach((input, i) => {
+    const errors = [errorNombre, errorTelefono, errorDireccion];
+    const tests = [
+      v => v.length >= 2,
+      v => /^(\+53\s?)?[\d\s]{6,14}$/.test(v.replace(/\s/g,'')),
+      v => v.length >= 5,
+    ];
+    input.addEventListener('blur', () => {
+      if (input.value.trim()) validateField(input, errors[i], tests[i]);
+    });
+    input.addEventListener('input', () => {
+      if (input.classList.contains('error')) validateField(input, errors[i], tests[i]);
+      hideError();
+    });
+  });
+
+  // 6. View orders button
+  $('viewOrdersBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    // Reset demo: go back to checkout with cart
+    currentCart = SAMPLE_CART;
+    renderSummary(currentCart);
+    isSubmitting = false;
+    submitBtn.disabled = false;
+    submitBtnText.textContent = 'Confirmar Pedido';
+    submitBtnSpinner.classList.add('section-hidden');
+    hideError();
+    // Reset form
+    checkoutForm.reset();
+    [inputNombre, inputTelefono, inputDireccion].forEach(el => el.classList.remove('error'));
+    [errorNombre, errorTelefono, errorDireccion].forEach(el => el.classList.add('section-hidden'));
+    showSection('checkout');
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+
+  // 7. Demo navbar hidden: clicking the "Volver al catálogo" from empty goes back
+  // But we also want to test empty: we can use a keyboard shortcut or just let it go back to checkout
+
+  // 8. Keyboard: Escape resets to checkout
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (!sections.checkout.classList.contains('section-hidden')) return; // already on checkout
+      currentCart = SAMPLE_CART;
+      renderSummary(currentCart);
+      isSubmitting = false;
+      submitBtn.disabled = false;
+      submitBtnText.textContent = 'Confirmar Pedido';
+      submitBtnSpinner.classList.add('section-hidden');
+      hideError();
+      checkoutForm.reset();
+      [inputNombre, inputTelefono, inputDireccion].forEach(el => el.classList.remove('error'));
+      [errorNombre, errorTelefono, errorDireccion].forEach(el => el.classList.add('section-hidden'));
+      showSection('checkout');
+      window.scrollTo({ top:0, behavior:'smooth' });
+    }
+  });
+
+  // 9. Handle dark mode system preference change
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('vg_theme')) {
+      setTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

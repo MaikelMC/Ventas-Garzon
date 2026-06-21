@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { query } from '../database/index.js';
 import { getAllProducts } from '../models/product.js';
 import { getOrderByTicket, confirmOrder, cancelOrder } from '../models/order.js';
-import { ApiError } from '../utils/helpers.js';
+import { ApiError, hashPassword, comparePasswords } from '../utils/helpers.js';
 
 export async function getDashboard(req: Request, res: Response) {
   try {
@@ -384,6 +384,40 @@ export async function deleteUser(req: Request, res: Response) {
     await query('DELETE FROM users WHERE id = $1', [id]);
 
     res.json({ message: 'Usuario eliminado correctamente' });
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+}
+
+export async function changePassword(req: Request, res: Response) {
+  try {
+    const userId = (req as any).user.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      throw new ApiError(400, 'Contraseña actual y nueva contraseña son requeridas');
+    }
+    if (newPassword.length < 6) {
+      throw new ApiError(400, 'La nueva contraseña debe tener al menos 6 caracteres');
+    }
+
+    const result = await query('SELECT id, password FROM users WHERE id = $1', [userId]);
+    if (result.rows.length === 0) {
+      throw new ApiError(404, 'Usuario no encontrado');
+    }
+
+    const valid = await comparePasswords(currentPassword, result.rows[0].password);
+    if (!valid) {
+      throw new ApiError(400, 'La contraseña actual es incorrecta');
+    }
+
+    const hashed = await hashPassword(newPassword);
+    await query('UPDATE users SET password = $1 WHERE id = $2', [hashed, userId]);
+
+    res.json({ message: 'Contraseña actualizada correctamente' });
   } catch (error: any) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json({ message: error.message });

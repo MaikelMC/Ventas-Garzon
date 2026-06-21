@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Ventas Garzón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================ */
+  /* DESIGN TOKENS                                 */
+  /* ============================================ */
+  :root {
+    /* Slate surface palette */
+    --surface-0: #ffffff;
+    --surface-1: #f8fafc;
+    --surface-2: #f1f5f9;
+    --surface-3: #e2e8f0;
+    --surface-hover: #e2e8f0;
+
+    /* Text */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+
+    /* Brand */
+    --primary: #10b981;
+    --primary-hover: #059669;
+    --primary-subtle: #d1fae5;
+    --primary-ring: rgba(16, 185, 129, 0.25);
+    --accent: #f59e0b;
+    --accent-hover: #d97706;
+
+    /* Borders */
+    --border: #e2e8f0;
+    --border-hover: #cbd5e1;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.08);
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* Typography */
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+
+    /* Transitions */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  [data-theme="dark"] {
+    --surface-0: #0f172a;
+    --surface-1: #1e293b;
+    --surface-2: #334155;
+    --surface-3: #475569;
+    --surface-hover: #334155;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #64748b;
+
+    --border: #334155;
+    --border-hover: #475569;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    --primary-subtle: rgba(16, 185, 129, 0.15);
+    --primary-ring: rgba(16, 185, 129, 0.35);
+  }
+
+  /* ============================================ */
+  /* RESET + BASE                                  */
+  /* ============================================ */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--surface-1);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+    min-height: 100vh;
+  }
+
+  /* ============================================ */
+  /* SKIP LINK + THEME TOGGLE                      */
+  /* ============================================ */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    padding: 12px 20px;
+    background: var(--primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    z-index: 1000;
+    text-decoration: none;
+    transition: top 0.3s var(--ease-out-expo);
+  }
+  .skip-link:focus {
+    top: 16px;
+  }
+
+  .theme-toggle-wrap {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 100;
+    isolation: isolate;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-0);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .theme-toggle:hover {
+    border-color: var(--border-hover);
+    background: var(--surface-2);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-md);
+  }
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  .theme-toggle:active {
+    transform: scale(0.93);
+  }
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .theme-toggle:active svg {
+    transform: rotate(45deg);
+  }
+
+  .theme-toggle .icon-sun,
+  .theme-toggle .icon-moon {
+    position: absolute;
+    transition: opacity 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+  }
+
+  [data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
+  [data-theme="light"] .theme-toggle .icon-sun { opacity: 0; transform: rotate(90deg) scale(0.6); }
+  [data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+  [data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: rotate(0deg); }
+
+  /* ============================================ */
+  /* LAYOUT                                        */
+  /* ============================================ */
+  .page-wrap {
+    max-width: 784px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  @media (min-width: 640px) {
+    .page-wrap {
+      padding: 100px 32px 140px;
+    }
+  }
+
+  /* ============================================ */
+  /* HEADER                                        */
+  /* ============================================ */
+  .faq-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .faq-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-subtle);
+    color: var(--primary);
+    margin-bottom: 20px;
+    transition: background 0.3s var(--ease-out-expo);
+  }
+  .faq-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .faq-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    transition: color 0.4s var(--ease-out-expo);
+  }
+  .faq-title span {
+    color: var(--primary);
+  }
+
+  .faq-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto;
+    transition: color 0.4s var(--ease-out-expo);
+  }
+
+  /* ============================================ */
+  /* SEARCH BAR                                    */
+  /* ============================================ */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 16px 20px 16px 52px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--surface-0);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: all 0.3s var(--ease-out-expo);
+    box-shadow: var(--shadow-sm);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .search-input::placeholder {
+    color: var(--text-tertiary);
+  }
+  .search-input:hover {
+    border-color: var(--border-hover);
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-ring), var(--shadow-md);
+  }
+  .search-input:active {
+    border-color: var(--primary);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: var(--text-tertiary);
+    pointer-events: none;
+    transition: color 0.3s var(--ease-out-expo);
+  }
+  .search-input:focus ~ .search-icon {
+    color: var(--primary);
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: var(--surface-3);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s var(--ease-out-expo);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .search-clear.visible {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .search-clear:hover {
+    background: var(--border-hover);
+    color: var(--text-primary);
+  }
+  .search-clear:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  .search-clear svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .search-hint {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    margin-top: 8px;
+    padding-left: 4px;
+    transition: color 0.4s var(--ease-out-expo);
+  }
+
+  /* ============================================ */
+  /* CATEGORY SECTION                              */
+  /* ============================================ */
+  .faq-category {
+    margin-bottom: 32px;
+  }
+  .faq-category:last-of-type {
+    margin-bottom: 48px;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid var(--border);
+    transition: border-color 0.3s var(--ease-out-expo);
+  }
+
+  .category-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+  .category-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .category-icon--pedidos   { background: #ede9fe; color: #7c3aed; }
+  .category-icon--pagos     { background: #d1fae5; color: #059669; }
+  .category-icon--envios    { background: #fef3c7; color: #d97706; }
+  .category-icon--devoluciones { background: #fee2e2; color: #dc2626; }
+
+  [data-theme="dark"] .category-icon--pedidos   { background: rgba(124, 58, 237, 0.2); color: #a78bfa; }
+  [data-theme="dark"] .category-icon--pagos     { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+  [data-theme="dark"] .category-icon--envios    { background: rgba(245, 158, 11, 0.2); color: #fde68a; }
+  [data-theme="dark"] .category-icon--devoluciones { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+
+  .category-title {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    transition: color 0.4s var(--ease-out-expo);
+  }
+
+  .category-count {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    margin-left: auto;
+    transition: color 0.4s var(--ease-out-expo);
+  }
+
+  /* ============================================ */
+  /* ACCORDION                                     */
+  /* ============================================ */
+  .accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-0);
+    overflow: hidden;
+    transition: all 0.3s var(--ease-out-expo);
+    box-shadow: var(--shadow-sm);
+  }
+  .accordion-item:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+  }
+  .accordion-item.is-open {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary), var(--shadow-md);
+  }
+
+  .accordion-item.hidden-by-search {
+    display: none;
+  }
+
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 18px 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--text-primary);
+    transition: background 0.2s var(--ease-out-expo), color 0.2s var(--ease-out-expo);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .accordion-trigger:hover {
+    background: var(--surface-1);
+  }
+  .accordion-trigger:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+  }
+  .accordion-item.is-open .accordion-trigger {
+    background: var(--surface-1);
+  }
+
+  .accordion-trigger::-moz-focus-inner {
+    border: 0;
+  }
+
+  .accordion-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--text-tertiary);
+    transition: transform 0.4s var(--ease-out-expo), color 0.3s var(--ease-out-expo);
+  }
+  .accordion-item.is-open .accordion-chevron {
+    transform: rotate(180deg);
+    color: var(--primary);
+  }
+
+  .accordion-trigger-text {
+    flex: 1;
+  }
+
+  .accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s var(--ease-out-expo);
+  }
+  .accordion-item.is-open .accordion-content {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion-content-inner {
+    overflow: hidden;
+  }
+
+  .accordion-answer {
+    padding: 0 20px 20px 54px;
+    font-size: 0.925rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    transition: color 0.4s var(--ease-out-expo);
+  }
+  .accordion-answer a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--primary-subtle);
+    transition: text-decoration-color 0.2s var(--ease-out-expo);
+  }
+  .accordion-answer a:hover {
+    text-decoration-color: var(--primary);
+  }
+
+  /* ============================================ */
+  /* EMPTY SEARCH STATE                            */
+  /* ============================================ */
+  .search-empty {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px 24px;
+    text-align: center;
+  }
+  .search-empty.visible {
+    display: flex;
+  }
+
+  .search-empty-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s var(--ease-out-expo);
+  }
+  .search-empty-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .search-empty-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .search-empty-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    max-width: 340px;
+  }
+  .search-empty-desc strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .search-empty-suggestion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--primary-subtle);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out-expo);
+  }
+  .search-empty-suggestion:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+  .search-empty-suggestion:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  .search-empty-suggestion:active {
+    transform: scale(0.96);
+  }
+  .search-empty-suggestion svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ============================================ */
+  /* CONTACT CTA                                   */
+  /* ============================================ */
+  .contact-cta {
+    margin-top: 16px;
+    padding: 40px 32px;
+    border-radius: var(--radius-lg);
+    background: var(--surface-0);
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s var(--ease-out-expo);
+  }
+  .contact-cta:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-hover);
+  }
+
+  .contact-cta-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .contact-cta-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .contact-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s var(--ease-out-expo);
+    cursor: pointer;
+    border: none;
+  }
+  .contact-btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .contact-btn--whatsapp {
+    background: #25d366;
+    color: #fff;
+  }
+  .contact-btn--whatsapp:hover {
+    background: #1ebe5d;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  }
+  .contact-btn--whatsapp:active {
+    transform: translateY(0);
+  }
+
+  .contact-btn--email {
+    background: var(--primary);
+    color: #fff;
+  }
+  .contact-btn--email:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--primary-ring);
+  }
+  .contact-btn--email:active {
+    transform: translateY(0);
+  }
+
+  .contact-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  /* ============================================ */
+  /* REDUCED MOTION                                */
+  /* ============================================ */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .accordion-content {
+      transition: none;
+    }
+    .accordion-item.is-open .accordion-content {
+      grid-template-rows: 1fr;
+    }
+    .accordion-chevron {
+      transition: none;
+    }
+    .accordion-item.is-open .accordion-chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  /* ============================================ */
+  /* RESPONSIVE                                    */
+  /* ============================================ */
+  @media (max-width: 480px) {
+    .faq-header {
+      margin-bottom: 32px;
+    }
+    .faq-icon {
+      width: 48px;
+      height: 48px;
+    }
+    .faq-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .search-input {
+      padding: 14px 16px 14px 44px;
+      font-size: 0.9rem;
+    }
+    .search-icon {
+      left: 14px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .accordion-trigger {
+      padding: 14px 16px;
+      font-size: 0.9rem;
+    }
+    .accordion-answer {
+      padding: 0 16px 16px 46px;
+      font-size: 0.875rem;
+    }
+
+    .contact-cta {
+      padding: 32px 20px;
+    }
+    .contact-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .contact-btn {
+      justify-content: center;
+    }
+
+    .theme-toggle-wrap {
+      top: 16px;
+      right: 16px;
+    }
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+    }
+
+    .page-wrap {
+      padding: 64px 16px 80px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========================================== -->
+<!-- SKIP LINK                                   -->
+<!-- ========================================== -->
+<a class="skip-link" href="#faq-content">Saltar al contenido</a>
+
+<!-- ========================================== -->
+<!-- THEME TOGGLE                                -->
+<!-- ========================================== -->
+<div class="theme-toggle-wrap">
+  <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema claro/oscuro" type="button">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</div>
+
+<!-- ========================================== -->
+<!-- PAGE                                        -->
+<!-- ========================================== -->
+<main class="page-wrap" id="faq-content">
+
+  <!-- HEADER -->
+  <header class="faq-header">
+    <div class="faq-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h1 class="faq-title">Preguntas <span>Frecuentes</span></h1>
+    <p class="faq-subtitle">Todo lo que necesitas saber sobre tus compras en Ventas Garzón</p>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" id="faqSearch" type="search" placeholder="Buscar preguntas..." aria-label="Buscar en preguntas frecuentes" autocomplete="off">
+    <button class="search-clear" id="searchClear" type="button" aria-label="Limpiar búsqueda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <p class="search-hint" id="searchHint">Escribe para filtrar preguntas</p>
+  </div>
+
+  <!-- FAQ ACCORDION -->
+  <div id="faqContainer">
+
+    <!-- CATEGORÍA: Pedidos -->
+    <section class="faq-category" data-category="pedidos">
+      <h2 class="category-header">
+        <span class="category-icon category-icon--pedidos" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </span>
+        <span class="category-title">Pedidos</span>
+        <span class="category-count" id="count-pedidos">2 preguntas</span>
+      </h2>
+      <div class="accordion-list" data-category="pedidos">
+
+        <article class="accordion-item" data-question="¿Cómo hago un pedido?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-pedido-1" id="trigger-pedido-1">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Cómo hago un pedido?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-pedido-1" aria-labelledby="trigger-pedido-1">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Hacer un pedido es muy sencillo. Solo tienes que navegar por nuestro catálogo, agregar los productos que desees al carrito y proceder al checkout. No necesitas crear una cuenta para comprar, aunque registrarte te permite guardar tu historial y agilizar futuras compras.</p>
+                <p style="margin-top: 12px;">Aceptamos pedidos por la página web y también por WhatsApp al <a href="tel:+5351234567">+53 5123 4567</a>. Si tienes problemas con el proceso, nuestro equipo está listo para ayudarte.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="accordion-item" data-question="¿Puedo cancelar mi pedido?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-pedido-2" id="trigger-pedido-2">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Puedo cancelar mi pedido?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-pedido-2" aria-labelledby="trigger-pedido-2">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Sí, puedes cancelar tu pedido siempre que no haya sido despachado. Si tu pedido aún está en estado "procesando", escríbenos por WhatsApp o correo y lo cancelamos sin costo.</p>
+                <p style="margin-top: 12px;">Una vez que el pedido está en ruta de entrega, no es posible cancelarlo, pero puedes rechazarlo al recibirlo y gestionar la devolución. Te reembolsaremos el importe en un plazo de 3 a 5 días hábiles.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CATEGORÍA: Pagos -->
+    <section class="faq-category" data-category="pagos">
+      <h2 class="category-header">
+        <span class="category-icon category-icon--pagos" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <span class="category-title">Pagos</span>
+        <span class="category-count" id="count-pagos">2 preguntas</span>
+      </h2>
+      <div class="accordion-list" data-category="pagos">
+
+        <article class="accordion-item" data-question="¿Cuáles son los métodos de pago?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-pago-1" id="trigger-pago-1">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Cuáles son los métodos de pago?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-pago-1" aria-labelledby="trigger-pago-1">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Aceptamos varias formas de pago para mayor comodidad:</p>
+                <ul style="margin: 8px 0 0 20px; display: flex; flex-direction: column; gap: 4px;">
+                  <li><strong>Efectivo</strong> contra entrega (solo en La Habana)</li>
+                  <li><strong>Transferencia</strong> bancaria o depósito en cuenta</li>
+                  <li><strong>Pago móvil</strong> (Zelle, Transfermóvil)</li>
+                  <li><strong>Tarjetas</strong> de crédito/débito (Visa, Mastercard) a través de nuestro portal</li>
+                </ul>
+                <p style="margin-top: 10px;">Próximamente estaremos habilitando criptopagos y PayPal para clientes internacionales.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="accordion-item" data-question="¿El pago es seguro?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-pago-2" id="trigger-pago-2">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿El pago es seguro?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-pago-2" aria-labelledby="trigger-pago-2">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Totalmente. Utilizamos cifrado SSL de 256 bits en todas las transacciones. Tus datos bancarios nunca se almacenan en nuestros servidores. Procesamos los pagos a través de pasarelas certificadas que cumplen con los estándares PCI-DSS.</p>
+                <p style="margin-top: 12px;">Si prefieres no usar tu tarjeta en línea, puedes seleccionar la opción de pago contra entrega y pagar en efectivo al recibir tu pedido.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CATEGORÍA: Envíos -->
+    <section class="faq-category" data-category="envios">
+      <h2 class="category-header">
+        <span class="category-icon category-icon--envios" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </span>
+        <span class="category-title">Envíos</span>
+        <span class="category-count" id="count-envios">3 preguntas</span>
+      </h2>
+      <div class="accordion-list" data-category="envios">
+
+        <article class="accordion-item" data-question="¿Cuánto tarda la entrega?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-envio-1" id="trigger-envio-1">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Cuánto tarda la entrega?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-envio-1" aria-labelledby="trigger-envio-1">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Los tiempos de entrega dependen de tu ubicación:</p>
+                <ul style="margin: 8px 0 0 20px; display: flex; flex-direction: column; gap: 4px;">
+                  <li><strong>La Habana:</strong> 24 a 48 horas hábiles</li>
+                  <li><strong>Provincias occidentales:</strong> 3 a 5 días hábiles</li>
+                  <li><strong>Provincias orientales:</strong> 5 a 8 días hábiles</li>
+                </ul>
+                <p style="margin-top: 10px;">Trabajamos con varias agencias de mensajería para garantizar que tu pedido llegue en el menor tiempo posible. Los pedidos realizados antes de las 12:00 p.m. se procesan el mismo día.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="accordion-item" data-question="¿Hacen envíos a toda la ciudad?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-envio-2" id="trigger-envio-2">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Hacen envíos a toda la ciudad?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-envio-2" aria-labelledby="trigger-envio-2">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Sí, cubrimos todos los municipios de La Habana: Plaza, Centro Habana, La Habana Vieja, Vedado, Miramar, Playa, Diez de Octubre, Cerro, Marianao, Lisa, Boyeros, Habana del Este, San Miguel del Padrón, Cotorro, Guanabacoa, Regla y Arroyo Naranjo.</p>
+                <p style="margin-top: 12px;">También hacemos envíos a otras provincias con un costo adicional. Escríbenos por WhatsApp para cotizar el envío a tu zona.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="accordion-item" data-question="¿Cómo rastreo mi pedido?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-envio-3" id="trigger-envio-3">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Cómo rastreo mi pedido?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-envio-3" aria-labelledby="trigger-envio-3">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Una vez que tu pedido es despachado, recibirás un enlace de seguimiento por WhatsApp y por correo electrónico con el código de rastreo. Allí podrás ver en tiempo real dónde está tu paquete.</p>
+                <p style="margin-top: 12px;">También puedes consultar el estado de tu pedido desde tu perfil en la sección "Mis Pedidos" si creaste una cuenta al comprar. Si tienes dudas, contáctanos directamente.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CATEGORÍA: Devoluciones -->
+    <section class="faq-category" data-category="devoluciones">
+      <h2 class="category-header">
+        <span class="category-icon category-icon--devoluciones" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </span>
+        <span class="category-title">Devoluciones</span>
+        <span class="category-count" id="count-devoluciones">1 pregunta</span>
+      </h2>
+      <div class="accordion-list" data-category="devoluciones">
+
+        <article class="accordion-item" data-question="¿Qué hago si llega un producto dañado?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-devolucion-1" id="trigger-devolucion-1">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Qué hago si llega un producto dañado?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-devolucion-1" aria-labelledby="trigger-devolucion-1">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>Lamentamos que haya ocurrido. Si recibes un producto en mal estado, escríbenos por WhatsApp en un plazo máximo de 48 horas con una foto del producto y el embalaje original. Evaluaremos el caso y te enviaremos un reemplazo sin costo adicional o te reembolsaremos el importe, según tu preferencia.</p>
+                <p style="margin-top: 12px;">Nuestro equipo se pondrá en contacto contigo para coordinar la recogida del producto dañado. El proceso de reemplazo suele tomar entre 3 y 5 días hábiles.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- EXTRA: Atención al cliente -->
+    <section class="faq-category" data-category="atencion">
+      <h2 class="category-header">
+        <span class="category-icon category-icon--pedidos" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <span class="category-title">Atención al Cliente</span>
+        <span class="category-count" id="count-atencion">1 pregunta</span>
+      </h2>
+      <div class="accordion-list" data-category="atencion">
+
+        <article class="accordion-item" data-question="¿Tienen atención al cliente por WhatsApp?">
+          <h3>
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="answer-atencion-1" id="trigger-atencion-1">
+              <svg class="accordion-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              <span class="accordion-trigger-text">¿Tienen atención al cliente por WhatsApp?</span>
+            </button>
+          </h3>
+          <div class="accordion-content" role="region" id="answer-atencion-1" aria-labelledby="trigger-atencion-1">
+            <div class="accordion-content-inner">
+              <div class="accordion-answer">
+                <p>¡Sí! Puedes escribirnos al <a href="https://wa.me/5351234567" target="_blank" rel="noopener noreferrer">+53 5123 4567</a> de lunes a sábado, de 9:00 a.m. a 7:00 p.m. Respondemos en un promedio de 15 minutos durante nuestro horario laboral.</p>
+                <p style="margin-top: 12px;">También puedes contactarnos por correo electrónico a <a href="mailto:soporte@ventasgarzon.com">soporte@ventasgarzon.com</a> y te responderemos en menos de 24 horas.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- EMPTY SEARCH STATE -->
+  <div class="search-empty" id="searchEmpty" role="status">
+    <div class="search-empty-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    </div>
+    <p class="search-empty-title">No encontramos resultados</p>
+    <p class="search-empty-desc">No hay preguntas que coincidan con <strong id="searchEmptyTerm"></strong>. Intenta con otros términos.</p>
+    <button class="search-empty-suggestion" id="searchSuggestion" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Limpiar búsqueda
+    </button>
+  </div>
+
+  <!-- CONTACT CTA -->
+  <aside class="contact-cta">
+    <h2 class="contact-cta-title">¿No encuentras lo que buscas?</h2>
+    <p class="contact-cta-desc">Estamos aquí para ayudarte. Contáctanos directamente por WhatsApp o correo electrónico.</p>
+    <div class="contact-buttons">
+      <a class="contact-btn contact-btn--whatsapp" href="https://wa.me/5351234567" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+      <a class="contact-btn contact-btn--email" href="mailto:soporte@ventasgarzon.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+        soporte@ventasgarzon.com
+      </a>
+    </div>
+  </aside>
+
+</main>
+
+<!-- ========================================== -->
+<!-- JAVASCRIPT                                  -->
+<!-- ========================================== -->
+<script>
+  (function() {
+    'use strict';
+
+    /* ======================================== */
+    /* THEME                                     */
+    /* ======================================== */
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+
+    function getPreferredTheme() {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function setTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+
+    setTheme(getPreferredTheme());
+
+    themeToggle.addEventListener('click', function() {
+      const current = html.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ======================================== */
+    /* ACCORDION — single open at a time         */
+    /* ======================================== */
+    const triggers = document.querySelectorAll('.accordion-trigger');
+
+    triggers.forEach(function(trigger) {
+      trigger.addEventListener('click', function(e) {
+        const item = this.closest('.accordion-item');
+        if (!item) return;
+
+        const isOpen = item.classList.contains('is-open');
+
+        // Close all other items in the same .accordion-list
+        const list = item.closest('.accordion-list');
+        if (list) {
+          list.querySelectorAll('.accordion-item.is-open').forEach(function(other) {
+            if (other !== item) {
+              other.classList.remove('is-open');
+              const btn = other.querySelector('.accordion-trigger');
+              if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+
+        // Toggle this one
+        if (isOpen) {
+          item.classList.remove('is-open');
+          this.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('is-open');
+          this.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    /* ======================================== */
+    /* SEARCH — debounced filter                 */
+    /* ======================================== */
+    const searchInput = document.getElementById('faqSearch');
+    const searchClear = document.getElementById('searchClear');
+    const searchEmpty = document.getElementById('searchEmpty');
+    const searchEmptyTerm = document.getElementById('searchEmptyTerm');
+    const searchSuggestion = document.getElementById('searchSuggestion');
+    const searchHint = document.getElementById('searchHint');
+    const allItems = document.querySelectorAll('.accordion-item');
+    const categories = document.querySelectorAll('.faq-category');
+    const countEls = {
+      pedidos: document.getElementById('count-pedidos'),
+      pagos: document.getElementById('count-pagos'),
+      envios: document.getElementById('count-envios'),
+      devoluciones: document.getElementById('count-devoluciones'),
+      atencion: document.getElementById('count-atencion'),
+    };
+
+    // Build search index
+    const itemsData = [];
+    allItems.forEach(function(item) {
+      const q = item.getAttribute('data-question') || '';
+      const answer = item.querySelector('.accordion-answer');
+      const text = answer ? answer.textContent || '' : '';
+      itemsData.push({
+        el: item,
+        question: q.toLowerCase(),
+        answer: text.toLowerCase(),
+        category: item.closest('[data-category]') ? item.closest('[data-category]').dataset.category : '',
+      });
+    });
+
+    function getCount(category) {
+      let visible = 0;
+      itemsData.forEach(function(d) {
+        if (d.category === category && !d.el.classList.contains('hidden-by-search')) {
+          visible++;
+        }
+      });
+      return visible;
+    }
+
+    function updateCounts() {
+      Object.keys(countEls).forEach(function(key) {
+        const el = countEls[key];
+        if (!el) return;
+        const n = getCount(key);
+        el.textContent = n === 1 ? '1 pregunta' : n + ' preguntas';
+      });
+
+      // Hide empty categories
+      categories.forEach(function(cat) {
+        const key = cat.dataset.category;
+        if (!key) return;
+        const visible = getCount(key);
+        cat.style.display = visible === 0 ? 'none' : '';
+      });
+    }
+
+    function filterItems(query) {
+      const trimmed = query.trim().toLowerCase();
+      let anyVisible = false;
+
+      itemsData.forEach(function(d) {
+        const match = trimmed === '' || d.question.indexOf(trimmed) !== -1 || d.answer.indexOf(trimmed) !== -1;
+        d.el.classList.toggle('hidden-by-search', !match);
+        if (match) anyVisible = true;
+      });
+
+      updateCounts();
+
+      // Show/hide empty state
+      if (trimmed !== '' && !anyVisible) {
+        searchEmptyTerm.textContent = '"' + trimmed + '"';
+        searchEmpty.classList.add('visible');
+        searchHint.textContent = 'Sin resultados para "' + trimmed + '"';
+      } else {
+        searchEmpty.classList.remove('visible');
+        searchHint.textContent = trimmed === '' ? 'Escribe para filtrar preguntas' : itemsData.filter(function(d) { return !d.el.classList.contains('hidden-by-search'); }).length + ' preguntas encontradas';
+      }
+
+      searchClear.classList.toggle('visible', trimmed !== '');
+    }
+
+    let debounceTimer;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() {
+        filterItems(searchInput.value);
+      }, 200);
+    });
+
+    searchClear.addEventListener('click', function() {
+      searchInput.value = '';
+      searchInput.focus();
+      filterItems('');
+    });
+
+    searchSuggestion.addEventListener('click', function() {
+      searchInput.value = '';
+      searchInput.focus();
+      filterItems('');
+    });
+
+    // Initialize
+    filterItems('');
+
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ventas Garzón — Demo flujo principal 30–45s</title>
+<style>
+  :root{--primary:#10b981;--primary-deep:#059669;--secondary:#f59e0b;--ink:#0f172a;--muted:#64748b;--surface:#f8fafc;--line:#e2e8f0;--white:#fff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:#0f172a;font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:40px;}
+  .deck{width:min(1120px,100vw);aspect-ratio:16/9;background:#fff;border-radius:32px;overflow:hidden;position:relative;box-shadow:0 30px 90px rgba(0,0,0,.35);}
+  .scene{position:absolute;inset:0;padding:72px;display:grid;grid-template-columns:1fr 1fr;gap:42px;opacity:0;animation:scene 40s linear infinite;}
+  .scene:nth-child(1){animation-delay:0s;}
+  .scene:nth-child(2){animation-delay:8s;}
+  .scene:nth-child(3){animation-delay:16s;}
+  .scene:nth-child(4){animation-delay:24s;}
+  .scene:nth-child(5){animation-delay:32s;}
+  @keyframes scene{0%,9%{opacity:0;transform:translateX(24px)}12%,20%{opacity:1;transform:translateX(0)}22%,100%{opacity:0;transform:translateX(-24px)}}
+  .kicker{color:var(--primary-deep);font-weight:900;text-transform:uppercase;letter-spacing:.14em;font-size:16px;margin-bottom:18px;}
+  h1{font-size:72px;line-height:.92;letter-spacing:-.06em;margin:0 0 24px;color:var(--ink);}
+  p{font-size:24px;line-height:1.35;color:var(--muted);margin:0;max-width:520px;}
+  .cta{margin-top:34px;display:inline-flex;align-items:center;gap:12px;padding:17px 30px;border-radius:999px;background:var(--primary);color:white;font-weight:900;font-size:20px;}
+  .phone{align-self:center;justify-self:center;width:360px;height:640px;border-radius:44px;background:#0f172a;padding:18px;box-shadow:0 30px 70px rgba(0,0,0,.35);position:relative;}
+  .screen{width:100%;height:100%;border-radius:30px;background:#fff;overflow:hidden;position:relative;}
+  .topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);}
+  .logo{font-weight:900;color:var(--ink);letter-spacing:-.03em}.logo span{color:var(--primary);}
+  .cart{width:24px;height:24px;border-radius:8px;background:var(--secondary);position:relative;}
+  .cart::after{content:"3";position:absolute;right:-7px;top:-8px;width:18px;height:18px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:11px;font-weight:900;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px;}
+  .card{height:150px;border-radius:18px;background:var(--surface);position:relative;overflow:hidden;animation:pop .4s ease both;}
+  .card:nth-child(1){animation-delay:.2s}.card:nth-child(2){animation-delay:.4s}.card:nth-child(3){animation-delay:.6s}.card:nth-child(4){animation-delay:.8s}
+  @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .card::before{content:"";position:absolute;left:18px;top:18px;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--secondary));}
+  .card span{position:absolute;left:18px;bottom:16px;width:72%;height:10px;border-radius:999px;background:#cbd5e1}.card span:nth-child(2){bottom:34px;width:55%}
+  .panel{position:absolute;inset:auto 18px 18px 18px;border-radius:24px;background:#fff;border:1px solid var(--line);padding:18px;box-shadow:0 18px 40px rgba(15,23,42,.16);}
+  .panel h3{margin:0 0 10px;font-size:22px;letter-spacing:-.03em}.panel p{font-size:14px;color:var(--muted);line-height:1.35}
+  .float{position:absolute;right:96px;top:112px;width:170px;height:170px;border-radius:34px;background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(245,158,11,.13));display:grid;place-items:center;animation:float 6s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  .float svg{width:112px;height:112px}
+  .steps{display:grid;gap:16px;margin-top:36px;max-width:460px}.step{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;background:var(--surface);animation:rise 4s ease both}.step:nth-child(2){animation-delay:.5s}.step:nth-child(3){animation-delay:1s}@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .num{width:38px;height:38px;border-radius:50%;background:var(--primary);color:white;display:grid;place-items:center;font-weight:900}.step strong{display:block;font-size:20px;margin-bottom:2px}.step small{color:var(--muted);font-size:14px}
+  .form{display:grid;gap:12px}.field{height:44px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}.field:nth-child(3){height:74px}.button{height:48px;border-radius:999px;background:var(--primary);display:grid;place-items:center;color:white;font-weight:900}
+  .success{display:grid;place-items:center;text-align:center}.check{width:116px;height:116px;border-radius:50%;background:var(--primary);display:grid;place-items:center;margin:0 auto 24px;animation:check .7s cubic-bezier(.34,1.56,.64,1) both}@keyframes check{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}.check::after{content:"✓";font-size:64px;color:white;font-weight:900}
+  .progress{position:absolute;left:72px;right:72px;bottom:36px;height:4px;border-radius:999px;background:#e2e8f0;overflow:hidden}.bar{height:100%;width:100%;background:var(--primary);animation:bar 40s linear infinite}@keyframes bar{to{transform:translateX(-100%)}}
+</style>
+</head>
+<body>
+<main class="deck" aria-label="Demo animado del flujo principal de Ventas Garzón">
+  <section class="scene">
+    <div><div class="kicker">Ventas Garzón</div><h1>Lo que falta, llega fácil.</h1><p>Compra local de aseo, alimentos y bebidas sin perder el día.</p><div class="cta">Ver catálogo →</div></div>
+    <div class="phone"><div class="screen"><div class="topbar"><div class="logo">Ventas <span>Garzón</span></div><div class="cart"></div></div><div class="grid"><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div></div></div></div>
+  </section>
+
+  <section class="scene">
+    <div><div class="kicker">Paso 1</div><h1>Explora por categoría.</h1><p>Alimentos, aseo, bebidas y limpieza aparecen claros desde el primer vistazo.</p><div class="steps"><div class="step"><span class="num">1</span><div><strong>Filtra rápido</strong><small>Encuentra lo básico sin buscar de más.</small></div></div><div class="step"><span class="num">2</span><div><strong>Revisa stock</strong><small>Disponibilidad visible antes de pedir.</small></div></div><div class="step"><span class="num">3</span><div><strong>Agrega al carrito</strong><small>Un toque para sumar lo que falta.</small></div></div></div></div>
+    <div class="phone"><div class="screen"><div class="topbar"><div class="logo">Productos</div><div class="cart"></div></div><div class="grid"><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div><div class="card"><span></span><span></span></div></div><div class="panel"><h3>Arroz Sublime</h3><p>Bolsa de 5 lb · CUP 450.00</p></div></div></div>
+  </section>
+
+  <section class="scene">
+    <div><div class="kicker">Paso 2</div><h1>Confirma tus datos.</h1><p>Nombre, teléfono y dirección de recogida en un formulario corto y claro.</p><div class="cta">Confirmar pedido →</div></div>
+    <div class="phone"><div class="screen"><div class="topbar"><div class="logo">Checkout</div><div class="cart"></div></div><div style="padding:18px" class="form"><div class="field"></div><div class="field"></div><div class="field"></div><div class="button">Confirmar pedido</div></div></div></div>
+  </section>
+
+  <section class="scene">
+    <div><div class="kicker">Paso 3</div><h1>Recibe confirmación.</h1><p>El pedido queda registrado y el usuario sabe exactamente qué sigue.</p><div class="steps"><div class="step"><span class="num">✓</span><div><strong>Pedido confirmado</strong><small>Número de orden visible.</small></div></div><div class="step"><span class="num">↗</span><div><strong>Ir a mis pedidos</strong><small>Historial siempre disponible.</small></div></div></div></div>
+    <div class="phone"><div class="screen"><div class="success"><div class="check"></div><h1 style="font-size:34px">¡Pedido recibido!</h1><p style="font-size:16px">Te esperamos en tienda para recoger y pagar.</p></div></div></div>
+  </section>
+
+  <section class="scene">
+    <div><div class="kicker">Cierre</div><h1>Tu bodega digital, cerca de ti.</h1><p>Para hogares y pequeños comercios que necesitan comprar claro, rápido y local.</p><div class="cta">Comprar hoy →</div></div>
+    <div class="float"><svg viewBox="0 0 120 120"><rect x="22" y="32" width="32" height="58" rx="12" fill="#10b981"/><path d="M22 32h32v18H22z" fill="#059669"/><rect x="66" y="18" width="32" height="72" rx="16" fill="#f59e0b"/><path d="M66 18h32v18H66z" fill="#d97706"/><circle cx="60" cy="72" r="28" fill="#10b981" opacity=".16"/></svg></div>
+  </section>
+
+  <div class="progress"><div class="bar"></div></div>
+</main>
+</body>
+</html>

@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, Package, ShoppingCart, Users, Plus, Pencil, Trash2,
   ChevronLeft, ChevronRight, ChevronDown, X, Save, AlertCircle, Check,
-  DollarSign, Truck, CheckCircle2, XCircle, Clock, ShieldCheck, Ticket, Search
+  DollarSign, Truck, CheckCircle2, XCircle, Clock, ShieldCheck, Ticket, Search, Key
 } from 'lucide-react';
 import { useAuthStore } from '../store';
 import { adminService } from '../services/api';
@@ -73,6 +73,14 @@ export const AdminPage: React.FC = () => {
   const [verifyError, setVerifyError] = useState('');
   const [confirmingId, setConfirmingId] = useState<number | null>(null);
   const [cancellingId, setCancellingId] = useState<number | null>(null);
+
+  // Change Password
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   const clearMessages = useCallback(() => {
     setTimeout(() => { setError(''); setSuccess(''); }, 3000);
@@ -334,6 +342,35 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const handleChangePassword = async () => {
+    setPasswordError('');
+    setPasswordSuccess('');
+    if (!currentPassword || !newPassword) {
+      setPasswordError('Completa ambas contraseñas');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError('La nueva contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError('Las contraseñas no coinciden');
+      return;
+    }
+    try {
+      setChangingPassword(true);
+      await adminService.changePassword(currentPassword, newPassword);
+      setPasswordSuccess('Contraseña actualizada correctamente');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    } catch (err: any) {
+      setPasswordError(err.response?.data?.message || 'Error al cambiar contraseña');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'verify', label: 'Verificar Reserva', icon: Ticket },
@@ -460,6 +497,64 @@ export const AdminPage: React.FC = () => {
                     ) : (
                       <p className="text-surface-500 dark:text-surface-400 text-sm">No hay pedidos recientes.</p>
                     )}
+                  </div>
+                </div>
+
+                {/* Change Password */}
+                <div className="bg-white dark:bg-surface-800 rounded-2xl md:rounded-3xl border border-surface-100 dark:border-surface-700 p-4 md:p-6 shadow-sm dark:shadow-black/20">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-2">
+                      <Key size={16} className="text-white" />
+                    </div>
+                    <h2 className="text-base md:text-xl font-display font-bold text-dark dark:text-white">Cambiar Contraseña</h2>
+                  </div>
+                  <div className="max-w-sm space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold text-surface-500 dark:text-surface-400 mb-1">Contraseña actual</label>
+                      <input
+                        type="password"
+                        value={currentPassword}
+                        onChange={(e) => { setCurrentPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-surface-50 dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 text-dark dark:text-white text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-surface-500 dark:text-surface-400 mb-1">Nueva contraseña</label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => { setNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-surface-50 dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 text-dark dark:text-white text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-surface-500 dark:text-surface-400 mb-1">Confirmar nueva contraseña</label>
+                      <input
+                        type="password"
+                        value={confirmNewPassword}
+                        onChange={(e) => { setConfirmNewPassword(e.target.value); setPasswordError(''); setPasswordSuccess(''); }}
+                        onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 bg-surface-50 dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 text-dark dark:text-white text-sm"
+                      />
+                    </div>
+                    {passwordError && (
+                      <p className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={12} /> {passwordError}</p>
+                    )}
+                    {passwordSuccess && (
+                      <p className="text-xs text-green-600 flex items-center gap-1"><Check size={12} /> {passwordSuccess}</p>
+                    )}
+                    <button
+                      onClick={handleChangePassword}
+                      disabled={changingPassword || !currentPassword || !newPassword || !confirmNewPassword}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-semibold text-xs md:text-sm shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {changingPassword ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <Key size={14} />
+                      )}
+                      Actualizar Contraseña
+                    </button>
                   </div>
                 </div>
               </div>

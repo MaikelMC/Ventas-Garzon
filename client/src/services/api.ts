@@ -240,6 +240,14 @@ export const adminService = {
     const response = await apiClient.getClient().get('/admin/analytics/sales', { params });
     return response.data;
   },
+
+  changePassword: async (currentPassword: string, newPassword: string) => {
+    const response = await apiClient.getClient().patch('/admin/change-password', {
+      currentPassword,
+      newPassword,
+    });
+    return response.data;
+  },
 };
 
 // Upload Service

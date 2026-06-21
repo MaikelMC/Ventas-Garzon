@@ -3,7 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, ShoppingCart, DollarSign, Package, TrendingUp,
-  Star, CalendarDays, X, Clock, CheckCircle2, XCircle
+  Star, CalendarDays, X, Clock, CheckCircle2, XCircle, Truck
 } from 'lucide-react';
 import { useAuthStore } from '../store';
 import { authService, orderService } from '../services/api';

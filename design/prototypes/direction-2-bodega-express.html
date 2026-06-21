@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bodega Express — Ventas Garzón</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --emerald:#10b981;--emerald-hover:#059669;--amber:#f59e0b;
+      --red:#ef4444;--green:#10b981;
+      --surface:#f8fafc;--surface-2:#f1f5f9;--surface-3:#e2e8f0;
+      --border:#e2e8f0;--border-2:#cbd5e1;
+      --ink:#1f2937;--ink-2:#4b5563;--ink-3:#9ca3af;
+      --white:#ffffff;
+      --card-bg:#ffffff;--card-border:#e2e8f0;
+      --sidebar-bg:#ffffff;
+      --hover-bg:#f1f5f9;
+      --input-bg:#ffffff;--input-border:#cbd5e1;
+      --pagination-bg:#ffffff;--pagination-border:#e2e8f0;--pagination-active:#10b981;--pagination-active-text:#ffffff;
+      --font-heading:'Outfit',sans-serif;
+      --font-body:'DM Sans',sans-serif;
+      --sidebar-w:270px;--gap:16px;--radius:8px;--radius-sm:4px;
+    }
+    [data-theme="dark"]{
+      --surface:#0f172a;--surface-2:#1e293b;--surface-3:#334155;
+      --border:#334155;--border-2:#475569;
+      --ink:#f1f5f9;--ink-2:#94a3b8;--ink-3:#64748b;
+      --white:#1e293b;
+      --card-bg:#1e293b;--card-border:#334155;
+      --sidebar-bg:#1e293b;
+      --hover-bg:#334155;
+      --input-bg:#0f172a;--input-border:#475569;
+      --pagination-bg:#1e293b;--pagination-border:#334155;--pagination-active:#10b981;--pagination-active-text:#ffffff;
+    }
+    html{font-size:15px}
+    body{
+      font-family:var(--font-body);color:var(--ink);background:var(--surface);
+      overflow-x:hidden;min-height:100vh;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+    }
+    h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:600;line-height:1.2}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+    button{cursor:pointer;font-family:var(--font-body);border:none;background:none}
+    input{font-family:var(--font-body)}
+    ::selection{background:var(--emerald);color:#fff}
+
+    .app{display:flex;min-height:100vh}
+    .sidebar{
+      width:var(--sidebar-w);flex-shrink:0;
+      background:var(--sidebar-bg);
+      border-right:1px solid var(--border);
+      padding:20px;display:flex;flex-direction:column;gap:20px;
+      position:sticky;top:0;height:100vh;overflow-y:auto;
+      z-index:100;
+    }
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .sidebar-brand-icon{width:32px;height:32px;background:var(--emerald);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;font-family:var(--font-heading)}
+    .sidebar-brand-text{font-size:14px;font-weight:600;font-family:var(--font-heading);color:var(--ink)}
+    .sidebar-brand-sub{font-size:11px;color:var(--ink-3);font-weight:400;font-family:var(--font-body)}
+
+    .search-box{position:relative}
+    .search-box input{
+      width:100%;padding:8px 12px 8px 34px;
+      background:var(--input-bg);border:1px solid var(--input-border);
+      border-radius:var(--radius-sm);font-size:13px;color:var(--ink);
+      outline:none;transition:border-color .15s;
+    }
+    .search-box input:focus{border-color:var(--emerald)}
+    .search-box input::placeholder{color:var(--ink-3)}
+    .search-box .icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:14px;line-height:1;pointer-events:none}
+
+    .filter-section{}
+    .filter-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);margin-bottom:8px}
+    .filter-list{display:flex;flex-direction:column;gap:2px}
+    .filter-item{
+      display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--radius-sm);
+      font-size:13px;color:var(--ink-2);cursor:pointer;transition:background .1s,color .1s;
+    }
+    .filter-item:hover{background:var(--hover-bg);color:var(--ink)}
+    .filter-item.active{background:var(--emerald);color:#fff}
+    .filter-item .count{color:var(--ink-3);font-size:12px;margin-left:auto}
+    .filter-item.active .count{color:rgba(255,255,255,.7)}
+
+    .stock-filter{display:flex;flex-direction:column;gap:4px}
+    .stock-option{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:13px;color:var(--ink-2)}
+    .stock-option input[type="checkbox"]{accent-color:var(--emerald);width:16px;height:16px;cursor:pointer}
+    .stock-label{display:flex;align-items:center;gap:6px}
+    .stock-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .stock-dot.green{background:var(--green)}
+    .stock-dot.amber{background:var(--amber)}
+    .stock-dot.red{background:var(--red)}
+
+    .toggle-dark{display:flex;align-items:center;gap:8px;padding:8px 0;cursor:pointer;font-size:12px;color:var(--ink-3);border-top:1px solid var(--border);margin-top:auto;padding-top:12px}
+    .toggle-dark:hover{color:var(--ink)}
+    .toggle-dark-track{width:36px;height:20px;border-radius:10px;background:var(--border-2);position:relative;transition:background .2s;flex-shrink:0}
+    .toggle-dark-track .knob{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .2s}
+    [data-theme="dark"] .toggle-dark-track{background:var(--emerald)}
+    [data-theme="dark"] .toggle-dark-track .knob{transform:translateX(16px)}
+
+    .main-content{flex:1;min-width:0;padding:0}
+    .toolbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 24px;background:var(--card-bg);
+      border-bottom:1px solid var(--border);gap:12px;
+      position:sticky;top:0;z-index:50;
+    }
+    .toolbar-left{display:flex;align-items:center;gap:12px}
+    .toolbar-right{display:flex;align-items:center;gap:12px}
+    .result-count{font-size:13px;color:var(--ink-3);white-space:nowrap}
+    .result-count strong{color:var(--ink)}
+    .view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+    .view-btn{padding:6px 10px;font-size:13px;color:var(--ink-3);transition:background .1s,color .1s;line-height:1}
+    .view-btn:hover{background:var(--hover-bg)}
+    .view-btn.active{background:var(--emerald);color:#fff}
+    .view-btn svg{display:block;width:16px;height:16px}
+    .sort-select{
+      padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--input-bg);font-size:13px;color:var(--ink);outline:none;cursor:pointer;
+    }
+    .sort-select:focus{border-color:var(--emerald)}
+
+    .filter-bar-mobile{display:none;padding:12px 16px;background:var(--card-bg);border-bottom:1px solid var(--border);gap:8px}
+    .filter-bar-mobile .search-box{flex:1}
+    .filter-toggle-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--ink-2);white-space:nowrap}
+    .filter-toggle-btn:hover{background:var(--hover-bg)}
+    .filter-toggle-btn svg{width:16px;height:16px}
+    .filter-toggle-btn .badge{background:var(--emerald);color:#fff;font-size:10px;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-weight:600}
+
+    .products-area{padding:16px 24px}
+    .product-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);
+    }
+    .product-list{display:none;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius)}
+
+    .card{
+      background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);
+      padding:12px;display:flex;flex-direction:column;gap:10px;
+      transition:border-color .15s;
+      position:relative;
+    }
+    .card:hover{border-color:var(--emerald)}
+    .card-img-wrap{
+      width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:var(--radius-sm);
+      background:var(--surface-2);display:flex;align-items:center;justify-content:center;
+    }
+    .card-img-wrap img{width:100%;height:100%;object-fit:cover}
+    .card-body{display:flex;flex-direction:column;gap:6px;flex:1}
+    .card-name{font-size:13px;font-weight:500;color:var(--ink);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .card-price{font-size:15px;font-weight:600;color:var(--ink)}
+    .card-unit{font-size:11px;color:var(--ink-3)}
+    .card-stock{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:2px 6px;border-radius:10px;line-height:1.3;width:fit-content}
+    .card-stock.disponible{background:rgba(16,185,129,.12);color:var(--green)}
+    .card-stock.pocas{background:rgba(245,158,11,.12);color:var(--amber)}
+    .card-stock.agotado{background:rgba(239,68,68,.12);color:var(--red)}
+    .card-actions{margin-top:auto}
+    .btn-add{
+      width:100%;padding:7px 0;font-size:13px;font-weight:500;
+      background:var(--emerald);color:#fff;border-radius:var(--radius-sm);
+      transition:background .15s;text-align:center;
+    }
+    .btn-add:hover{background:var(--emerald-hover)}
+    .btn-add:disabled{background:var(--border-2);color:var(--ink-3);cursor:not-allowed}
+
+    .list-row{
+      display:grid;grid-template-columns:56px 1fr auto auto auto auto;
+      gap:12px;align-items:center;padding:10px 16px;background:var(--card-bg);
+    }
+    .list-row:hover{background:var(--hover-bg)}
+    .list-row .card-img-wrap{width:40px;height:40px;border-radius:var(--radius-sm);overflow:hidden;background:var(--surface-2)}
+    .list-row .card-img-wrap img{width:100%;height:100%;object-fit:cover}
+    .list-row .card-name{font-size:13px;font-weight:500;color:var(--ink)}
+    .list-row .card-price{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap}
+    .list-row .card-unit{font-size:11px;color:var(--ink-3);white-space:nowrap}
+    .list-row .btn-add{width:auto;padding:5px 14px;font-size:12px}
+
+    .pagination-nav{
+      display:flex;align-items:center;justify-content:center;gap:4px;
+      padding:20px 0 32px;margin-top:8px;
+    }
+    .page-btn{
+      min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--pagination-border);border-radius:var(--radius-sm);
+      background:var(--pagination-bg);font-size:13px;color:var(--ink-2);
+      transition:background .1s,color .1s,border-color .1s;
+    }
+    .page-btn:hover{background:var(--hover-bg);border-color:var(--border-2)}
+    .page-btn.active{background:var(--pagination-active);color:var(--pagination-active-text);border-color:var(--pagination-active)}
+    .page-btn.disabled{opacity:.4;cursor:not-allowed}
+    .page-btn svg{width:16px;height:16px}
+
+    .sidebar-overlay{display:none}
+
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important}
+    }
+
+    @media (max-width: 1200px){
+      .product-grid{grid-template-columns:repeat(3,1fr)}
+    }
+    @media (max-width: 900px){
+      .product-grid{grid-template-columns:repeat(2,1fr)}
+      .list-row{grid-template-columns:44px 1fr auto auto}
+      .list-row .card-unit{display:none}
+    }
+    @media (max-width: 768px){
+      .sidebar{display:none;position:fixed;top:0;left:0;width:300px;height:100vh;z-index:200;border-right:1px solid var(--border);box-shadow:0 0 30px rgba(0,0,0,.15)}
+      .sidebar.open{display:flex}
+      .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
+      .sidebar-overlay.open{display:block}
+      .filter-bar-mobile{display:flex;flex-wrap:wrap}
+      .toolbar{padding:8px 16px}
+      .toolbar .sort-select{font-size:12px;padding:5px 8px}
+      .products-area{padding:12px 16px}
+      .product-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+      .card{padding:8px;gap:8px}
+      .card-name{font-size:12px}
+      .card-price{font-size:14px}
+    }
+    @media (max-width: 480px){
+      .product-grid{grid-template-columns:1fr 1fr;gap:8px}
+      .card-img-wrap{aspect-ratio:1/1}
+      .result-count{font-size:12px}
+      .filter-bar-mobile{padding:8px 12px}
+      .products-area{padding:8px 12px}
+      .view-toggle{display:none}
+      .list-row{grid-template-columns:40px 1fr auto;gap:8px;padding:8px 12px}
+      .list-row .card-price{font-size:13px}
+    }
+    @media (max-width: 374px){
+      .product-grid{grid-template-columns:1fr}
+      .card{flex-direction:row;gap:12px}
+      .card-img-wrap{width:80px;height:80px;flex-shrink:0}
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">VG</div>
+        <div>
+          <div class="sidebar-brand-text">Ventas Garzón</div>
+          <div class="sidebar-brand-sub">Bodega Express</div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span class="icon" aria-hidden="true">&#x1F50D;</span>
+        <input type="search" id="searchInput" placeholder="Buscar productos…" aria-label="Buscar productos">
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Categorías</div>
+        <div class="filter-list" id="categoryList">
+          <div class="filter-item active" data-cat="all">Todos <span class="count">17</span></div>
+          <div class="filter-item" data-cat="granos">Granos <span class="count">4</span></div>
+          <div class="filter-item" data-cat="aceites">Aceites y Conservas <span class="count">1</span></div>
+          <div class="filter-item" data-cat="lacteos">Lácteos y Huevos <span class="count">2</span></div>
+          <div class="filter-item" data-cat="cafe">Café y Azúcar <span class="count">3</span></div>
+          <div class="filter-item" data-cat="pan">Pan y Galletas <span class="count">2</span></div>
+          <div class="filter-item" data-cat="limpieza">Limpieza <span class="count">2</span></div>
+          <div class="filter-item" data-cat="personal">Cuidado Personal <span class="count">1</span></div>
+          <div class="filter-item" data-cat="carnes">Carnes y Pollo <span class="count">1</span></div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Disponibilidad</div>
+        <div class="stock-filter" id="stockFilter">
+          <label class="stock-option">
+            <input type="checkbox" value="disponible" checked>
+            <span class="stock-label"><span class="stock-dot green"></span> Disponible</span>
+          </label>
+          <label class="stock-option">
+            <input type="checkbox" value="pocas" checked>
+            <span class="stock-label"><span class="stock-dot amber"></span> Pocas unidades</span>
+          </label>
+          <label class="stock-option">
+            <input type="checkbox" value="agotado" checked>
+            <span class="stock-label"><span class="stock-dot red"></span> Agotado</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-dark" id="darkToggle" role="button" tabindex="0" aria-label="Alternar modo oscuro">
+        <div class="toggle-dark-track"><div class="knob"></div></div>
+        <span>Modo oscuro</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="filter-bar-mobile" id="filterBarMobile">
+        <button class="filter-toggle-btn" id="mobileFilterBtn" aria-label="Filtros">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          <span>Filtros</span>
+        </button>
+        <div class="search-box" style="flex:1">
+          <span class="icon" aria-hidden="true">&#x1F50D;</span>
+          <input type="search" id="searchInputMobile" placeholder="Buscar…" aria-label="Buscar productos">
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="result-count"><strong id="resultCount">17</strong> productos</div>
+        </div>
+        <div class="toolbar-right">
+          <div class="view-toggle" role="group" aria-label="Vista">
+            <button class="view-btn active" data-view="grid" aria-label="Vista cuadrícula" title="Cuadrícula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button class="view-btn" data-view="list" aria-label="Vista lista" title="Lista">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+          <select class="sort-select" id="sortSelect" aria-label="Ordenar">
+            <option value="default">Ordenar</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
+            <option value="name">A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-area">
+        <div class="product-grid" id="productGrid"></div>
+        <div class="product-list" id="productList"></div>
+        <nav class="pagination-nav" id="paginationNav" aria-label="Paginación"></nav>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function(){
+      const products = [
+        {id:1,nombre:'Arroz Cristal (5 lb)',precio:85.00,categoria:'granos',stock:'disponible',slug:'arroz-cristal',img:''},
+        {id:2,nombre:'Frijoles Negros (1 lb)',precio:45.00,categoria:'granos',stock:'disponible',slug:'frijoles-negros',img:''},
+        {id:3,nombre:'Aceite de Girasol (1 L)',precio:120.00,categoria:'aceites',stock:'pocas',slug:'aceite-girasol',img:''},
+        {id:4,nombre:'Leche en Polvo (800 g)',precio:210.00,categoria:'lacteos',stock:'disponible',slug:'leche-polvo',img:''},
+        {id:5,nombre:'Café Serrano (250 g)',precio:95.00,categoria:'cafe',stock:'disponible',slug:'cafe-serrano',img:''},
+        {id:6,nombre:'Pan Canilla (unidad)',precio:5.00,categoria:'pan',stock:'disponible',slug:'pan-canilla',img:''},
+        {id:7,nombre:'Huevos de Corral (cartón x 30)',precio:180.00,categoria:'lacteos',stock:'pocas',slug:'huevos-corral',img:''},
+        {id:8,nombre:'Pollo Congelado (1 kg)',precio:250.00,categoria:'carnes',stock:'agotado',slug:'pollo-congelado',img:''},
+        {id:9,nombre:'Jabón de Lavar (pañete x 3)',precio:35.00,categoria:'limpieza',stock:'disponible',slug:'jabon-lavar',img:''},
+        {id:10,nombre:'Detergente en Polvo (500 g)',precio:65.00,categoria:'limpieza',stock:'disponible',slug:'detergente-polvo',img:'',img2:'https://picsum.photos/seed/detergente-polvo/240/240'},
+        {id:11,nombre:'Pasta Dental (120 ml)',precio:55.00,categoria:'personal',stock:'disponible',slug:'pasta-dental',img:''},
+        {id:12,nombre:'Arroz Integral (2.5 lb)',precio:75.00,categoria:'granos',stock:'disponible',slug:'arroz-integral',img:''},
+        {id:13,nombre:'Frijoles Colorados (1 lb)',precio:42.00,categoria:'granos',stock:'disponible',slug:'frijoles-colorados',img:''},
+        {id:14,nombre:'Sal Marina (1 kg)',precio:15.00,categoria:'cafe',stock:'disponible',slug:'sal-marina',img:''},
+        {id:15,nombre:'Azúcar Refinada (2.5 lb)',precio:50.00,categoria:'cafe',stock:'pocas',slug:'azucar-refinada',img:''},
+        {id:16,nombre:'Galletas de Sal (paquete)',precio:25.00,categoria:'pan',stock:'disponible',slug:'galletas-sal',img:''},
+        {id:17,nombre:'Compota de Guayaba (200 g)',precio:30.00,categoria:'aceites',stock:'disponible',slug:'compota-guayaba',img:''}
+      ];
+
+      products.forEach(p => {
+        if (!p.img) p.img = 'https://picsum.photos/seed/' + p.slug + '/240/240';
+      });
+
+      const stockLabels = {disponible:'Disponible',pocas:'Pocas unidades',agotado:'Agotado'};
+      const perPage = 12;
+      let currentPage = 1;
+      let currentCategory = 'all';
+      let currentSort = 'default';
+      let currentView = 'grid';
+      let searchQuery = '';
+      let stockFilters = {disponible:true,pocas:true,agotado:true};
+
+      const gridEl = document.getElementById('productGrid');
+      const listEl = document.getElementById('productList');
+      const paginationEl = document.getElementById('paginationNav');
+      const resultCountEl = document.getElementById('resultCount');
+      const searchInput = document.getElementById('searchInput');
+      const searchInputMobile = document.getElementById('searchInputMobile');
+      const sortSelect = document.getElementById('sortSelect');
+      const categoryItems = document.querySelectorAll('#categoryList .filter-item');
+      const stockCheckboxes = document.querySelectorAll('#stockFilter input[type="checkbox"]');
+      const viewBtns = document.querySelectorAll('.view-btn');
+      const darkToggle = document.getElementById('darkToggle');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+
+      function getFilteredProducts(){
+        return products.filter(p => {
+          if (currentCategory !== 'all' && p.categoria !== currentCategory) return false;
+          if (!stockFilters[p.stock]) return false;
+          if (searchQuery){
+            const q = searchQuery.toLowerCase();
+            if (!p.nombre.toLowerCase().includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      function sortProducts(arr){
+        if (currentSort === 'price-asc') return [...arr].sort((a,b) => a.precio - b.precio);
+        if (currentSort === 'price-desc') return [...arr].sort((a,b) => b.precio - a.precio);
+        if (currentSort === 'name') return [...arr].sort((a,b) => a.nombre.localeCompare(b.nombre));
+        return arr;
+      }
+
+      function render(){
+        const filtered = sortProducts(getFilteredProducts());
+        const total = filtered.length;
+        resultCountEl.textContent = total;
+
+        const totalPages = Math.max(1, Math.ceil(total / perPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * perPage;
+        const pageItems = filtered.slice(start, start + perPage);
+
+        renderGrid(pageItems);
+        renderList(pageItems);
+        renderPagination(totalPages);
+      }
+
+      function renderGrid(items){
+        gridEl.innerHTML = items.map(p => {
+          const stockClass = p.stock;
+          const disabled = p.stock === 'agotado' ? 'disabled' : '';
+          return `<div class="card" data-id="${p.id}">
+            <div class="card-img-wrap"><img src="${p.img}" alt="${p.nombre}" loading="lazy"></div>
+            <div class="card-body">
+              <div class="card-name">${p.nombre}</div>
+              <div class="card-meta">
+                <span class="card-price">CUP ${p.precio.toFixed(2)}</span>
+              </div>
+              <div class="card-stock ${stockClass}">${stockLabels[p.stock]}</div>
+              <div class="card-actions">
+                <button class="btn-add" ${disabled} data-id="${p.id}">${p.stock === 'agotado' ? 'Agotado' : 'Añadir'}</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      function renderList(items){
+        listEl.innerHTML = items.map(p => {
+          const stockClass = p.stock;
+          const disabled = p.stock === 'agotado' ? 'disabled' : '';
+          return `<div class="list-row" data-id="${p.id}">
+            <div class="card-img-wrap"><img src="${p.img}" alt="${p.nombre}" loading="lazy"></div>
+            <div class="card-name">${p.nombre}</div>
+            <div class="card-stock ${stockClass}">${stockLabels[p.stock]}</div>
+            <span class="card-price">CUP ${p.precio.toFixed(2)}</span>
+            <span class="card-unit">c/u</span>
+            <button class="btn-add ${disabled}" ${disabled} data-id="${p.id}">${p.stock === 'agotado' ? 'Agotado' : 'Añadir'}</button>
+          </div>`;
+        }).join('');
+        if (!items.length){
+          listEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--ink-3);background:var(--card-bg)">No se encontraron productos con los filtros seleccionados.</div>';
+        }
+      }
+
+      function renderPagination(totalPages){
+        if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+        let html = '';
+        html += `<button class="page-btn${currentPage<=1?' disabled':''}" data-page="${currentPage-1}"${currentPage<=1?' disabled':''}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>`;
+        for (let i=1; i<=totalPages; i++){
+          html += `<button class="page-btn${i===currentPage?' active':''}" data-page="${i}">${i}</button>`;
+        }
+        html += `<button class="page-btn${currentPage>=totalPages?' disabled':''}" data-page="${currentPage+1}"${currentPage>=totalPages?' disabled':''}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>`;
+        paginationEl.innerHTML = html;
+      }
+
+      function toggleView(view){
+        currentView = view;
+        gridEl.style.display = view === 'grid' ? 'grid' : 'none';
+        listEl.style.display = view === 'list' ? 'flex' : 'none';
+        viewBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+      }
+
+      function updateCategory(cat){
+        currentCategory = cat;
+        currentPage = 1;
+        categoryItems.forEach(el => el.classList.toggle('active', el.dataset.cat === cat));
+        render();
+      }
+
+      function updateStockFilters(){
+        stockCheckboxes.forEach(cb => { stockFilters[cb.value] = cb.checked; });
+        currentPage = 1;
+        render();
+      }
+
+      function initTheme(){
+        const saved = localStorage.getItem('bodega-theme');
+        const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = saved || prefers;
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+
+      function toggleTheme(){
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('bodega-theme', next);
+      }
+
+      initTheme();
+      render();
+
+      searchInput.addEventListener('input', e => { searchQuery = e.target.value; currentPage = 1; render(); });
+      searchInputMobile.addEventListener('input', e => { searchQuery = e.target.value; searchInput.value = e.target.value; currentPage = 1; render(); });
+
+      categoryItems.forEach(el => el.addEventListener('click', () => updateCategory(el.dataset.cat)));
+
+      stockCheckboxes.forEach(cb => cb.addEventListener('change', updateStockFilters));
+
+      sortSelect.addEventListener('change', e => { currentSort = e.target.value; render(); });
+
+      viewBtns.forEach(btn => btn.addEventListener('click', () => toggleView(btn.dataset.view)));
+
+      paginationEl.addEventListener('click', e => {
+        const btn = e.target.closest('.page-btn');
+        if (!btn || btn.classList.contains('disabled')) return;
+        const page = parseInt(btn.dataset.page);
+        if (isNaN(page)) return;
+        currentPage = page;
+        render();
+      });
+
+      darkToggle.addEventListener('click', toggleTheme);
+
+      mobileFilterBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+      });
+
+      gridEl.addEventListener('click', e => {
+        const btn = e.target.closest('.btn-add:not(:disabled)');
+        if (btn) {
+          const id = parseInt(btn.dataset.id);
+          const p = products.find(x => x.id === id);
+          if (p) {
+            btn.textContent = '✓ Añadido';
+            btn.style.background = 'var(--ink-3)';
+            setTimeout(() => { btn.textContent = 'Añadir'; btn.style.background = ''; }, 1200);
+          }
+        }
+      });
+
+      listEl.addEventListener('click', e => {
+        const btn = e.target.closest('.btn-add:not(:disabled)');
+        if (btn) {
+          const id = parseInt(btn.dataset.id);
+          const p = products.find(x => x.id === id);
+          if (p) {
+            btn.textContent = '✓ Añadido';
+            btn.style.background = 'var(--ink-3)';
+            setTimeout(() => { btn.textContent = 'Añadir'; btn.style.background = ''; }, 1200);
+          }
+        }
+      });
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('bodega-theme')){
+          document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

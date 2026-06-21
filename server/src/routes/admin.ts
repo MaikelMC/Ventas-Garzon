@@ -24,4 +24,6 @@ router.delete('/users/:id', authMiddleware, adminMiddleware, adminController.del
 
 router.get('/analytics/sales', authMiddleware, adminMiddleware, adminController.getSalesAnalytics);
 
+router.patch('/change-password', authMiddleware, adminMiddleware, adminController.changePassword);
+
 export default router;

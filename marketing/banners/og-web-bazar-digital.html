@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ventas Garzón — Banner OG 1200×630</title>
+<style>
+  :root{
+    --primary:#10b981; --primary-deep:#059669; --secondary:#f59e0b; --ink:#0f172a;
+    --muted:#64748b; --surface:#f8fafc; --surface-2:#e2e8f0; --white:#ffffff;
+  }
+  body{margin:0;background:#0f172a;padding:40px;font-family:Arial,sans-serif;}
+  .stage{display:grid;gap:40px;justify-items:center;}
+  .banner{position:relative;overflow:hidden;background:var(--white);box-shadow:0 24px 80px rgba(0,0,0,.25);font-family:Arial,sans-serif;}
+  .safe{position:absolute;inset:56px;z-index:2;}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em;color:var(--ink);font-size:28px;}
+  .mark{width:38px;height:38px;border-radius:12px;background:var(--primary);display:grid;place-items:center;color:white;font-weight:900;}
+  .eyebrow{color:var(--primary-deep);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:15px;margin:28px 0 10px;}
+  h1{margin:0;font-size:74px;line-height:.95;letter-spacing:-.055em;max-width:520px;}
+  p{margin:18px 0 0;max-width:470px;color:var(--muted);font-size:25px;line-height:1.35;}
+  .cta{margin-top:34px;display:inline-flex;align-items:center;gap:14px;padding:17px 30px;border-radius:999px;background:var(--primary);color:white;font-weight:800;font-size:20px;text-decoration:none;}
+  .cta span{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;}
+  .visual{position:absolute;right:34px;top:92px;width:430px;height:430px;border-radius:44px;background:var(--surface);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(15,23,42,.06);}
+  .visual img{width:92%;height:92%;object-fit:contain;}
+  .pill{position:absolute;left:56px;bottom:54px;z-index:2;display:flex;gap:10px;align-items:center;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.86);box-shadow:0 12px 30px rgba(15,23,42,.10);font-weight:800;color:var(--ink);}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--secondary);}
+  .v2{background:linear-gradient(135deg,#ffffff 0%,#f1f5f9 100%);}
+  .v2 .visual{background:linear-gradient(135deg,rgba(16,185,129,.16),rgba(245,158,11,.12));}
+  .v3{background:#0f172a;color:white;}
+  .v3 .eyebrow,.v3 p{color:#a7f3d0;}
+  .v3 .logo{color:white;}
+  .v3 .visual{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(245,158,11,.12));}
+  .v3 .pill{background:rgba(255,255,255,.10);color:white;box-shadow:none;}
+</style>
+</head>
+<body>
+<div class="stage">
+  <section class="banner" style="width:1200px;height:630px;">
+    <div class="safe">
+      <div class="logo"><span class="mark">VG</span>Ventas Garzón</div>
+      <div class="eyebrow">Compra local</div>
+      <h1>Lo que falta, llega fácil</h1>
+      <p>Aseo, alimentos y bebidas listos para recoger en Ventas Garzón.</p>
+      <a class="cta" href="#">Ver catálogo <span>→</span></a>
+    </div>
+    <div class="visual"><img src="../assets/product-montage.svg" alt="" /></div>
+    <div class="pill"><span class="dot"></span>Pedido claro · Recogida simple</div>
+  </section>
+
+  <section class="banner v2" style="width:1200px;height:630px;">
+    <div class="safe">
+      <div class="logo"><span class="mark">VG</span>Ventas Garzón</div>
+      <div class="eyebrow">Compra semanal</div>
+      <h1>Tu compra, sin vueltas</h1>
+      <p>Elige lo básico, confirma tu pedido y pasa a recoger cuando te convenga.</p>
+      <a class="cta" href="#">Ordenar ahora <span>→</span></a>
+    </div>
+    <div class="visual"><img src="../assets/product-montage.svg" alt="" /></div>
+    <div class="pill"><span class="dot"></span>Reserva online · Recoge en tienda</div>
+  </section>
+
+  <section class="banner v3" style="width:1200px;height:630px;">
+    <div class="safe">
+      <div class="logo"><span class="mark">VG</span>Ventas Garzón</div>
+      <div class="eyebrow">Confianza local</div>
+      <h1>Básicos de hogar, pedido seguro</h1>
+      <p>Catálogo claro, precios visibles y atención cercana para tu hogar o negocio.</p>
+      <a class="cta" href="#">Comprar hoy <span>→</span></a>
+    </div>
+    <div class="visual"><img src="../assets/product-montage.svg" alt="" /></div>
+    <div class="pill"><span class="dot"></span>Hogares · Bodegas · Mayoristas</div>
+  </section>
+</div>
+</body>
+</html>
