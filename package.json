@@ -1,26 +1,30 @@
 {
   "name": "ventas-garzon",
-  "version": "1.0.0",
-  "description": "Aplicación de comercio electrónico para Ventas Garzón",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Ventas Garzón - Tienda en línea con reservas",
+  "private": true,
   "scripts": {
-    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client start\"",
-    "server": "npm --prefix server run dev",
-    "client": "npm --prefix client start",
-    "build": "npm --prefix client build",
-    "server:build": "npm --prefix server build",
-    "db:up": "docker compose up -d",
-    "db:down": "docker compose down",
-    "db:setup": "npm --prefix server run db:setup"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [
-    "ecommerce",
-    "ventas-garzon"
-  ],
-  "author": "Ventas Garzón",
-  "license": "MIT",
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@vercel/blob": "^0.27.0",
+    "zustand": "^4.5.0",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.400.0"
+  },
   "devDependencies": {
-    "@playwright/test": "^1.61.0",
-    "concurrently": "^7.6.0"
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
   }
 }

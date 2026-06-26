@@ -117,6 +117,45 @@ export async function setupDatabase() {
       console.log(`Seeded ${PRODUCTS.length} products`);
     }
 
+    // ── Demo: seed sample orders ──
+    await query(`
+      INSERT INTO orders (user_id, ticket_code, customer_name, customer_id_card, customer_phone, payment_method, total, status, created_at)
+      VALUES
+        (1, 'VG-A1B2', 'María García',        '00123456789', '+53 5 1111 2222', 'cash',       14000, 'pending',   CURRENT_TIMESTAMP - INTERVAL '2 days'),
+        (1, 'VG-C3D4', 'Carlos López',        '00987654321', '+53 5 3333 4444', 'transfer',   23500, 'confirmed', CURRENT_TIMESTAMP - INTERVAL '5 days'),
+        (1, 'VG-E5F6', 'Ana Martínez',        '00555555555', '+53 5 5555 6666', 'cash',        7500, 'picked_up', CURRENT_TIMESTAMP - INTERVAL '10 days'),
+        (1, 'VG-G7H8', 'Pedro Rodríguez',     '00333333333', '+53 5 7777 8888', 'transfer',   10500, 'cancelled', CURRENT_TIMESTAMP - INTERVAL '3 days'),
+        (1, 'VG-I9J0', 'Laura Fernández',     '00222222222', '+53 5 9999 0000', 'cash',       20000, 'pending',   CURRENT_TIMESTAMP - INTERVAL '1 day'),
+        (1, 'VG-K1L2', 'Jorge Hernández',     '00111111111', '+53 5 1234 5678', 'transfer',    8500, 'confirmed', CURRENT_TIMESTAMP - INTERVAL '7 days');
+    `);
+
+    await query(`
+      INSERT INTO order_items (order_id, product_id, quantity, price)
+      VALUES
+        -- Order 1 (pending): 2x Caldito + 1x Jabón + 3x Jugos = 14000
+        (1, 1, 2, 2500),
+        (1, 4, 1, 3000),
+        (1, 5, 3, 2000),
+        -- Order 2 (confirmed): 1x Crema Aloe + 2x Shampú Aloe = 23500
+        (2, 2, 1, 8500),
+        (2, 9, 2, 7500),
+        -- Order 3 (picked_up): 1x Pasta Tomate + 1x Refrescos = 7500
+        (3, 6, 1, 4500),
+        (3, 7, 1, 3000),
+        -- Order 4 (cancelled): 1x Jabón Facial + 1x Pasta Tomate = 10500
+        (4, 3, 1, 6000),
+        (4, 6, 1, 4500),
+        -- Order 5 (pending): 3x Caldito + 2x Refrescos + 1x Sopita + 2x Sazón = 20000
+        (5, 1, 3, 2500),
+        (5, 7, 2, 3000),
+        (5, 10, 1, 2500),
+        (5, 8, 2, 2000),
+        -- Order 6 (confirmed): 1x Crema Aloe = 8500
+        (6, 2, 1, 8500);
+    `);
+
+    console.log('Seeded 6 sample orders with items');
+
     console.log('Database setup completed successfully');
   } catch (error) {
     console.error('Error setting up database:', error);

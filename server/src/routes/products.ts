@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as productController from '../controllers/product.js';
-import { authMiddleware, adminMiddleware } from '../middleware/auth.js';
+import { demoMiddleware } from '../middleware/demo-middleware.js';
 
 const router = Router();
 
@@ -9,9 +9,9 @@ router.get('/', productController.listProducts);
 router.get('/search', productController.searchProductsHandler);
 router.get('/:id', productController.getProduct);
 
-// Admin routes
-router.post('/', authMiddleware, adminMiddleware, productController.createProductHandler);
-router.put('/:id', authMiddleware, adminMiddleware, productController.updateProductHandler);
-router.delete('/:id', authMiddleware, adminMiddleware, productController.deleteProductHandler);
+// Demo mode: admin product routes bypass authentication
+router.post('/', demoMiddleware, productController.createProductHandler);
+router.put('/:id', demoMiddleware, productController.updateProductHandler);
+router.delete('/:id', demoMiddleware, productController.deleteProductHandler);
 
 export default router;

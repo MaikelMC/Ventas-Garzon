@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import * as orderController from '../controllers/order.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { demoMiddleware } from '../middleware/demo-middleware.js';
 
 const router = Router();
 
-router.post('/', authMiddleware, orderController.createOrderHandler);
-router.get('/', authMiddleware, orderController.listOrders);
-router.get('/:id', authMiddleware, orderController.getOrderHandler);
-router.patch('/:id/status', authMiddleware, orderController.updateOrderStatusHandler);
+// Demo mode: orders bypass authentication
+router.post('/', demoMiddleware, orderController.createOrderHandler);
+router.get('/', demoMiddleware, orderController.listOrders);
+router.get('/:id', demoMiddleware, orderController.getOrderHandler);
+router.patch('/:id/status', demoMiddleware, orderController.updateOrderStatusHandler);
 
 export default router;

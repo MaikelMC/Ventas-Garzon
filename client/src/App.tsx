@@ -21,6 +21,17 @@ function App() {
   const { setAuthFromStorage } = useAuthStore();
 
   useEffect(() => {
+    // Demo mode: auto-set admin user so all frontend guards pass
+    const demoUser = {
+      id: 1,
+      name: 'Administrador Demo',
+      email: 'admin@ventasgarzon.com',
+      role: 'admin' as const,
+      created_at: new Date().toISOString(),
+    };
+    localStorage.setItem('auth_user', JSON.stringify(demoUser));
+    localStorage.setItem('auth_token', 'demo-token');
+
     setAuthFromStorage();
   }, [setAuthFromStorage]);
 

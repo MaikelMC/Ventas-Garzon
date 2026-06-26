@@ -1,29 +1,30 @@
 import { Router } from 'express';
 import * as adminController from '../controllers/admin.js';
-import { authMiddleware, adminMiddleware } from '../middleware/auth.js';
+import { demoMiddleware } from '../middleware/demo-middleware.js';
 
 const router = Router();
 
-router.get('/dashboard', authMiddleware, adminMiddleware, adminController.getDashboard);
+// Demo mode: all admin routes bypass authentication
+router.get('/dashboard', demoMiddleware, adminController.getDashboard);
 
-router.get('/products', authMiddleware, adminMiddleware, adminController.listAllProducts);
-router.post('/products', authMiddleware, adminMiddleware, adminController.createProduct);
-router.put('/products/:id', authMiddleware, adminMiddleware, adminController.updateProduct);
-router.delete('/products/:id', authMiddleware, adminMiddleware, adminController.deleteProduct);
+router.get('/products', demoMiddleware, adminController.listAllProducts);
+router.post('/products', demoMiddleware, adminController.createProduct);
+router.put('/products/:id', demoMiddleware, adminController.updateProduct);
+router.delete('/products/:id', demoMiddleware, adminController.deleteProduct);
 
-router.get('/orders', authMiddleware, adminMiddleware, adminController.listAllOrders);
-router.patch('/orders/:id/status', authMiddleware, adminMiddleware, adminController.updateOrderStatus);
+router.get('/orders', demoMiddleware, adminController.listAllOrders);
+router.patch('/orders/:id/status', demoMiddleware, adminController.updateOrderStatus);
 
-router.get('/reservations/verify', authMiddleware, adminMiddleware, adminController.verifyReservation);
-router.patch('/reservations/:id/confirm', authMiddleware, adminMiddleware, adminController.confirmReservation);
-router.patch('/reservations/:id/cancel', authMiddleware, adminMiddleware, adminController.cancelReservation);
+router.get('/reservations/verify', demoMiddleware, adminController.verifyReservation);
+router.patch('/reservations/:id/confirm', demoMiddleware, adminController.confirmReservation);
+router.patch('/reservations/:id/cancel', demoMiddleware, adminController.cancelReservation);
 
-router.get('/users', authMiddleware, adminMiddleware, adminController.listAllUsers);
-router.patch('/users/:id/role', authMiddleware, adminMiddleware, adminController.updateUserRole);
-router.delete('/users/:id', authMiddleware, adminMiddleware, adminController.deleteUser);
+router.get('/users', demoMiddleware, adminController.listAllUsers);
+router.patch('/users/:id/role', demoMiddleware, adminController.updateUserRole);
+router.delete('/users/:id', demoMiddleware, adminController.deleteUser);
 
-router.get('/analytics/sales', authMiddleware, adminMiddleware, adminController.getSalesAnalytics);
+router.get('/analytics/sales', demoMiddleware, adminController.getSalesAnalytics);
 
-router.patch('/change-password', authMiddleware, adminMiddleware, adminController.changePassword);
+router.patch('/change-password', demoMiddleware, adminController.changePassword);
 
 export default router;

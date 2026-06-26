@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { authMiddleware, adminMiddleware } from '../middleware/auth.js';
+import { demoMiddleware } from '../middleware/demo-middleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +35,7 @@ const upload = multer({
 
 const router = Router();
 
-router.post('/', authMiddleware, adminMiddleware, upload.single('image'), (req, res) => {
+router.post('/', demoMiddleware, upload.single('image'), (req, res) => {
   if (!req.file) {
     res.status(400).json({ message: 'No se envió ningún archivo' });
     return;
